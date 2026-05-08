@@ -3,6 +3,8 @@ import bg from '../assets/bg.png';
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Bestseller from '../components/Bestseller';
+import Latestarrival from '../components/Latestarrivals';
+import Allbooks from '../components/Allbooks';
 
 
 const Home = () => {
@@ -28,6 +30,10 @@ const Home = () => {
       </div>
     </div>
     <Bestseller/>
+    <hr className='w-[95%] m-auto mt-15 mb-10 text-gray-300'/>
+    <Latestarrival/>
+    <hr className='w-[95%] m-auto mt-15 mb-10 text-gray-300'/>
+    <Allbooks/>
     <Footer/>
     </>
 
