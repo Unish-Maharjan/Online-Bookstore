@@ -1,18 +1,22 @@
 import React from 'react'
+import { Link } from 'react-router'
 
 const Header = () => {
   return (
     <>
-    <header className='bg-[#1976d2] text-white px-5 py-4 font-sans sticky'>
+    <header className='sticky top-0 w-full bg-[#ffffff]/93 text-black px-5 py-4 font-[Poppins] z-50 shadow-md'>
         <div className='flex justify-between items-center ml-5'>
-        <div className='flex items-center gap-2 text-2xl '>
+        <div className='flex items-center gap-2 text-[26px] '>
+          <Link to='/' className='font-bold flex items-center gap-1 hover:cursor-pointer hover:text-[#5951e6]'>
             <i class="fa-solid fa-book-open"></i>
-            <p className='font-bold'>BookStore</p>
+            BookStore
+          </Link>
         </div>
-        <div className='flex items-center justify-center gap-4 text-[17px] mr-5'>
-            <button className='border py-1 px-3 rounded-[5px] hover:bg-white hover:text-[#1976d2] hover:cursor-pointer'>BROWSE</button>
-            <button className='flex gap-1 items-center hover:cursor-pointer hover:bg-gray-950/5 p-2'><i class="fa-solid fa-cart-arrow-down"></i>CART</button>
-            <button className='flex gap-1 items-center hover:cursor-pointer hover:bg-gray-950/5 p-2'><i class="fa-solid fa-gear"></i>ADMIN</button>
+        <div className='flex items-center justify-center gap-10 text-[18px] mr-8'>
+            <Link to='/' className='font-semibold hover:cursor-pointer hover:text-[#5951e6]'>Home</Link>
+            <Link to='/' className='font-semibold hover:cursor-pointer hover:text-[#5951e6]'>Books</Link>
+            <button className='flex text-xl items-center hover:cursor-pointer hover:text-[#5951e6]'><i class="fa-solid fa-cart-arrow-down"></i></button>
+            <button className='flex text-xl items-center hover:cursor-pointer hover:text-[#5951e6]'><i class="fa-regular fa-user"></i></button>
         </div>
         </div>
     </header> 
