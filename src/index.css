@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
-
+body{
+  background-color: #efeffa;
+}
 .container{
   width: 95%; 
   margin: auto;

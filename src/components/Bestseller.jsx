@@ -10,7 +10,9 @@ import { Pagination } from 'swiper/modules';
 const Bestseller = () => {
   return (
     <>
-  <div className='flex justify-between'>
+    <div className='bg-white'>
+    <div className='container'>
+  <div className='flex justify-between mb-10'>
     <div className='flex gap-3 px-8 mt-10 items-center'>
       <div className='h-12 w-10 flex items-center justify-center rounded-[15px] bg-amber-300 text-orange-600'>
         <i className="fa-solid fa-arrow-trend-up"></i>
@@ -34,18 +36,19 @@ const Bestseller = () => {
     </div>
   </div>
 
-  <div className='px-8 mt-10 gap-6'>
+  
     <Swiper
         slidesPerView={4}
-        spaceBetween={30}
+        spaceBetween={18}
         pagination={{
           clickable: true,
         }}
         modules={[Pagination]}
         className="mySwiper h-150"
       >
+      <div className='px-8 gap-6 grid grid-cols-4'>
       <SwiperSlide>
-        <div className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-140
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-130 w-85 ml-2
       transition-all duration-300 hover:scale-105 hover:shadow-2xl">
 
       <div className="overflow-hidden rounded-t-2xl h-[70%]">
@@ -55,7 +58,7 @@ const Bestseller = () => {
          />
       </div>
 
-    <div className="p-3">
+    <div className="p-3 px-3">
 
       <div className="flex items-center gap-2 mb-2">
         <span className="text-[16px] font-medium text-indigo-500 bg-indigo-50 px-3 py-0.5 rounded-full">
@@ -67,20 +70,22 @@ const Bestseller = () => {
         </span>
       </div>
 
-        <p className="text-2xl font-bold text-gray-900 leading-snug">
+        <p className="text-[22px] font-bold text-gray-900 leading-snug h-8 overflow-hidden">
           The Midnight Library
         </p>
 
-       <p className="text-[16px] text-gray-400 mt-0.5 mb-3">
+       <p className="text-[14px] text-gray-400 mt-0.5 mb-2">
           Matt Haig
         </p>
 
       <div className="flex items-center justify-between">
-        <span className="text-2xl font-bold text-indigo-500">
+        <div className="text-2xl font-bold text-indigo-500">
           $69.99
-        </span>
+        </div>
 
-        <button className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-white text-sm font-semibold px-4 py-2 rounded-full transition-all duration-150">
+        <button className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600
+         active:scale-95 text-white text-sm font-semibold px-4 py-2 
+         rounded-full transition-all duration-150">
           <i className="fa-solid fa-cart-arrow-down"></i>
           Add
         </button>
@@ -91,7 +96,7 @@ const Bestseller = () => {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-140
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-130 w-85 ml-2
       transition-all duration-300 hover:scale-105 hover:shadow-2xl">
 
       <div className="overflow-hidden rounded-t-2xl h-[70%]">
@@ -101,7 +106,7 @@ const Bestseller = () => {
          />
       </div>
 
-    <div className="p-3">
+    <div className="p-3 px-3">
 
       <div className="flex items-center gap-2 mb-2">
         <span className="text-[16px] font-medium text-indigo-500 bg-indigo-50 px-3 py-0.5 rounded-full">
@@ -113,20 +118,22 @@ const Bestseller = () => {
         </span>
       </div>
 
-        <p className="text-2xl font-bold text-gray-900 leading-snug">
+        <p className="text-[22px] font-bold text-gray-900 leading-snug h-8 overflow-hidden">
           The Midnight Library
         </p>
 
-       <p className="text-[16px] text-gray-400 mt-0.5 mb-3">
+       <p className="text-[14px] text-gray-400 mt-0.5 mb-2">
           Matt Haig
         </p>
 
       <div className="flex items-center justify-between">
-        <span className="text-2xl font-bold text-indigo-500">
+        <div className="text-2xl font-bold text-indigo-500">
           $69.99
-        </span>
+        </div>
 
-        <button className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-white text-sm font-semibold px-4 py-2 rounded-full transition-all duration-150">
+        <button className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600
+         active:scale-95 text-white text-sm font-semibold px-4 py-2 
+         rounded-full transition-all duration-150">
           <i className="fa-solid fa-cart-arrow-down"></i>
           Add
         </button>
@@ -137,7 +144,7 @@ const Bestseller = () => {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-140
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-130 w-85 ml-2
       transition-all duration-300 hover:scale-105 hover:shadow-2xl">
 
       <div className="overflow-hidden rounded-t-2xl h-[70%]">
@@ -147,7 +154,7 @@ const Bestseller = () => {
          />
       </div>
 
-    <div className="p-3">
+    <div className="p-3 px-3">
 
       <div className="flex items-center gap-2 mb-2">
         <span className="text-[16px] font-medium text-indigo-500 bg-indigo-50 px-3 py-0.5 rounded-full">
@@ -159,20 +166,22 @@ const Bestseller = () => {
         </span>
       </div>
 
-        <p className="text-2xl font-bold text-gray-900 leading-snug">
+        <p className="text-[22px] font-bold text-gray-900 leading-snug h-8 overflow-hidden">
           The Midnight Library
         </p>
 
-       <p className="text-[16px] text-gray-400 mt-0.5 mb-3">
+       <p className="text-[14px] text-gray-400 mt-0.5 mb-2">
           Matt Haig
         </p>
 
       <div className="flex items-center justify-between">
-        <span className="text-2xl font-bold text-indigo-500">
+        <div className="text-2xl font-bold text-indigo-500">
           $69.99
-        </span>
+        </div>
 
-        <button className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-white text-sm font-semibold px-4 py-2 rounded-full transition-all duration-150">
+        <button className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600
+         active:scale-95 text-white text-sm font-semibold px-4 py-2 
+         rounded-full transition-all duration-150">
           <i className="fa-solid fa-cart-arrow-down"></i>
           Add
         </button>
@@ -183,7 +192,7 @@ const Bestseller = () => {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-140
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-130 w-85 ml-2
       transition-all duration-300 hover:scale-105 hover:shadow-2xl">
 
       <div className="overflow-hidden rounded-t-2xl h-[70%]">
@@ -193,7 +202,7 @@ const Bestseller = () => {
          />
       </div>
 
-    <div className="p-3">
+    <div className="p-3 px-3">
 
       <div className="flex items-center gap-2 mb-2">
         <span className="text-[16px] font-medium text-indigo-500 bg-indigo-50 px-3 py-0.5 rounded-full">
@@ -205,20 +214,22 @@ const Bestseller = () => {
         </span>
       </div>
 
-        <p className="text-2xl font-bold text-gray-900 leading-snug">
+        <p className="text-[22px] font-bold text-gray-900 leading-snug h-8 overflow-hidden">
           The Midnight Library
         </p>
 
-       <p className="text-[16px] text-gray-400 mt-0.5 mb-3">
+       <p className="text-[14px] text-gray-400 mt-0.5 mb-2">
           Matt Haig
         </p>
 
       <div className="flex items-center justify-between">
-        <span className="text-2xl font-bold text-indigo-500">
+        <div className="text-2xl font-bold text-indigo-500">
           $69.99
-        </span>
+        </div>
 
-        <button className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-white text-sm font-semibold px-4 py-2 rounded-full transition-all duration-150">
+        <button className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600
+         active:scale-95 text-white text-sm font-semibold px-4 py-2 
+         rounded-full transition-all duration-150">
           <i className="fa-solid fa-cart-arrow-down"></i>
           Add
         </button>
@@ -228,54 +239,10 @@ const Bestseller = () => {
 
         </div>
       </SwiperSlide>
-      <SwiperSlide>
-        <div className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-140
-      transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-
-      <div className="overflow-hidden rounded-t-2xl h-[70%]">
-        <img
-          src='https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop'
-         className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-         />
       </div>
-
-    <div className="p-3">
-
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-[16px] font-medium text-indigo-500 bg-indigo-50 px-3 py-0.5 rounded-full">
-          Fiction
-        </span>
-
-        <span className="flex items-center gap-1 text-[15px] font-medium text-gray-700">
-          <span className="text-amber-400">★</span>4.5
-        </span>
-      </div>
-
-        <p className="text-2xl font-bold text-gray-900 leading-snug">
-          The Midnight Library
-        </p>
-
-       <p className="text-[16px] text-gray-400 mt-0.5 mb-3">
-          Matt Haig
-        </p>
-
-      <div className="flex items-center justify-between">
-        <span className="text-2xl font-bold text-indigo-500">
-          $69.99
-        </span>
-
-        <button className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-white text-sm font-semibold px-4 py-2 rounded-full transition-all duration-150">
-          <i className="fa-solid fa-cart-arrow-down"></i>
-          Add
-        </button>
-      </div>
-
-    </div>
-
-        </div>
-      </SwiperSlide>
     </Swiper>
 
+  </div>
   </div>
     </>
   )
