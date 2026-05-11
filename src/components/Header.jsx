@@ -16,7 +16,7 @@ const Header = () => {
         <div className='flex items-center justify-center gap-10 text-[18px] mr-8'>
             <Link to='/home' className='font-semibold hover:cursor-pointer hover:text-[#5951e6]'>Home</Link>
             <Link to='/books' className='font-semibold hover:cursor-pointer hover:text-[#5951e6]'>Books</Link>
-            <button className='flex text-xl items-center hover:cursor-pointer hover:text-[#5951e6]'><i class="fa-solid fa-cart-arrow-down"></i></button>
+            <Link to='/cart'><button className='flex text-xl items-center hover:cursor-pointer hover:text-[#5951e6]'><i class="fa-solid fa-cart-arrow-down"></i></button></Link>
             <button className='flex text-xl items-center hover:cursor-pointer hover:text-[#5951e6]'><i class="fa-regular fa-user"></i></button>
         </div>
         </div>
