@@ -3,6 +3,9 @@ import './App.css'
 import Home from './pages/Home.jsx'
 import Books from './pages/Books.jsx';
 import Cart from './pages/Cart.jsx';
+import Header from './components/Header.jsx';
+import Footer from './components/Footer.jsx';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const router = createBrowserRouter([
@@ -20,11 +23,16 @@ function App() {
     },
     {
       path: '/cart',
-      element: <><Cart/></>
+      element: <><Header/><Cart/><Footer/></>
     },
 
   ]);
-  return <RouterProvider router={router}/>
+  return (
+    <>
+      <Toaster position="top-right" />
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App

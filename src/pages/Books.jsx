@@ -2,11 +2,32 @@ import React from 'react'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import { useGetproductQuery } from '../services/productApi'
-
+import { useCart } from '../components/CartContext' 
+import toast from 'react-hot-toast'
 
 
 const Books = () => {
     const {data} = useGetproductQuery();
+    const { dispatch } = useCart();
+
+    const handleAddToCart = (item) => {
+        dispatch({
+            type: "ADD_TO_CART",
+            payload: item,
+            });
+
+        toast.success(`${item.title} added to cart!`, {
+            duration: 3000,
+            style: {
+                padding: '14px',
+                color: '#12923d',
+                background: '#ecfdf3',
+            },
+            iconTheme: {
+                primary: '#12923d',
+            },
+            });
+        };
   return (
     <>
             <Header />
@@ -149,7 +170,7 @@ const Books = () => {
                             {data?.products?.map((product) => (
 
                                 <div
-                                    key={product._id}
+                                    key={product.id}
                                     className='bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-120 w-75 transition-all duration-300 hover:scale-105 hover:shadow-2xl'
                                 >
 
@@ -193,7 +214,9 @@ const Books = () => {
                                             </span>
 
                                             <button
-                                                className='flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-white text-sm font-semibold px-4 py-2 mt-2 rounded-full transition-all duration-150'
+                                                className='flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600 active:scale-95 
+                                                text-white text-sm font-semibold px-4 py-2 mt-2 rounded-full transition-all duration-150'
+                                                onClick={() => handleAddToCart(product)}
                                             >
                                                 <i className="fa-solid fa-cart-arrow-down"></i>
                                                 Add

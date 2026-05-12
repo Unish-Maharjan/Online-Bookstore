@@ -6,12 +6,15 @@ import { Provider } from 'react-redux'
 import { store } from './store'
 import { Routes, Route, Link } from 'react-router-dom'
 import { BrowserRouter } from 'react-router-dom'
+import { CartProvider } from './components/CartContext.jsx';
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
+      <CartProvider>
     <App/>
+      </CartProvider>
     </Provider>
   </StrictMode>,
 )
