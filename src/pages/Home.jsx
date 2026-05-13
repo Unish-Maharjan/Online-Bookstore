@@ -26,8 +26,12 @@ const Home = () => {
       </div>
 
       <div className='flex gap-6 mt-11'>
-        <Link to='/books'><button className='p-2 w-70 text-[20px] bg-[#4f46e5] shadow-md text-white hover:scale-105 ease-out duration-500 hover:cursor-pointer hover:shadow-blue-400 hover:shadow-lg rounded-[10px] font-semibold'>Browse Books</button></Link>
-        <button className='p-2 w-70 text-[20px] bg-white shadow-md hover:scale-105 ease-out duration-500 hover:cursor-pointer hover:shadow-gray-400 hover:shadow-lg rounded-[10px] font-semibold'>Explore Categories</button>
+        <Link to='/books'><button className='p-2 w-70 text-[20px] bg-[#4f46e5] shadow-md text-white hover:scale-105
+         ease-out duration-500 hover:cursor-pointer hover:shadow-blue-400 hover:shadow-lg 
+         rounded-[10px] font-semibold'>Browse Books</button></Link>
+        <button className='p-2 w-70 text-[20px] bg-white shadow-md hover:scale-105 ease-out duration-500 
+        hover:cursor-pointer hover:shadow-gray-400 hover:shadow-lg rounded-[10px] font-semibold'>
+          Explore Categories</button>
         
       </div>
     </div>
