@@ -7,7 +7,7 @@ export default function CartItem({ item }) {
     <div className="bg-white rounded-2xl p-5 flex items-center gap-5 shadow-sm border border-gray-100">
    
       <img
-        src={item.images}
+        src={item.image}
         alt={item.title}
         className="w-20 h-24 object-cover rounded-xl"
       />
@@ -25,7 +25,7 @@ export default function CartItem({ item }) {
      
         <div className="flex items-center gap-3 mt-3">
           <button
-            onClick={() => dispatch({ type: "DECREMENT", payload: item.id })}
+            onClick={() => dispatch({ type: "DECREMENT", payload: item._id })}
             className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-indigo-400 hover:text-indigo-600 transition-colors text-lg leading-none"
           >
             −
@@ -34,7 +34,7 @@ export default function CartItem({ item }) {
             {item.quantity}
           </span>
           <button
-            onClick={() => dispatch({ type: "INCREMENT", payload: item.id })}
+            onClick={() => dispatch({ type: "INCREMENT", payload: item._id })}
             className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-indigo-400 hover:text-indigo-600 transition-colors text-lg leading-none"
           >
             +
@@ -44,7 +44,7 @@ export default function CartItem({ item }) {
 
       <div className="flex flex-col items-end justify-between h-24">
         <button
-          onClick={() => dispatch({ type: "REMOVE_FROM_CART", payload: item.id })}
+          onClick={() => dispatch({ type: "REMOVE_FROM_CART", payload: item._id })}
           className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
         >
           <i className="fa-solid fa-trash text-red-400 text-[16px]" />

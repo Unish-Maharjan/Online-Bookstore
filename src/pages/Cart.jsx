@@ -28,12 +28,13 @@ const Cart = () => {
     <div className="min-h-screen bg-[#f3f4f8]">
     
       <div className="max-w-6xl mx-auto px-6 pt-6 pb-2 flex items-center gap-2 text-sm text-gray-400">
+        <Link to="/home">
         <button
-          onClick={() => navigate('/home')}
           className="hover:text-indigo-600 transition-colors cursor-pointer"
-        >
+        >  
           Home
         </button>
+        </Link>
         <span className="text-gray-300">›</span>
         <span className="text-gray-500 font-medium">Cart</span>
       </div>

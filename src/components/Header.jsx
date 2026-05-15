@@ -39,9 +39,11 @@ const Header = () => {
 
             </div>
             
+            <Link to="/user">
             <button className='flex text-[22px] items-center hover:cursor-pointer hover:text-[#5951e6]'>
               <i class="fa-regular fa-user"></i>
               </button>
+            </Link>
         </div>
         </div>
       </div>

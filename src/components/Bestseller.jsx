@@ -10,6 +10,8 @@ import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 
 const Bestseller = () => {
+
+
   const { dispatch } = useCart();
   
       const handleAddToCart = (item) => {

@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { use } from 'react'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
-import { useGetproductQuery } from '../services/productApi'
+import { useGetBooksQuery } from '../services/bookApi'
 import { useCart } from '../components/CartContext' 
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router'
 
 
 const Books = () => {
-    const {data} = useGetproductQuery();
+    const { data } = useGetBooksQuery();
     const { dispatch } = useCart();
+    const navigate = useNavigate();
 
     const handleAddToCart = (item) => {
         dispatch({
@@ -28,9 +30,14 @@ const Books = () => {
             },
             });
         };
+
+        const getSingleProductId = (id) => {
+            console.log(id);
+            navigate(`/books/${id}`)
+        }
   return (
     <>
-            <Header />
+            <Header/>
 
             <div className='flex flex-col justify-center items-center gap-3 mr-10 bg-[#f8fafc] pb-20'>
 
@@ -142,7 +149,7 @@ const Books = () => {
                         <div className='mb-8 mt-15 flex items-center justify-between'>
 
                             <div className='text-gray-500 font-[Poppins]'>
-                                Showing {data?.products?.length || 0} books
+                                Showing books
                             </div>
 
                             <form>
@@ -167,17 +174,20 @@ const Books = () => {
                         {/* BOOK CARDS */}
                         <div className='grid grid-cols-3 gap-10'>
 
-                            {data?.products?.map((product) => (
+                            {data?.map((product, index) => (
 
                                 <div
                                     key={product.id}
-                                    className='bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-120 w-75 transition-all duration-300 hover:scale-105 hover:shadow-2xl'
+                                    className='bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group h-120 w-75 
+                                    transition-all duration-300 hover:scale-105 hover:shadow-2xl'
+                                    
                                 >
 
-                                    <div className='overflow-hidden rounded-t-2xl h-[65%]'>
+                                    <div className='overflow-hidden rounded-t-2xl h-[65%]'
+                                    onClick={() => {getSingleProductId(product._id)}}>
 
                                         <img
-                                            src={product?.images}
+                                            src={product?.image}
                                             alt={product?.title}
                                             className='w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110'
                                         />
@@ -186,30 +196,36 @@ const Books = () => {
 
                                     <div className='p-3'>
 
-                                        <div className='flex items-center gap-2 mb-2'>
+                                        <div className='flex items-center gap-2 mb-2'
+                                        onClick={() => {getSingleProductId(product._id)}}>
 
-                                            <span className='text-[12px] font-medium text-indigo-500 bg-indigo-50 px-3 py-0.5 rounded-full'>
+                                            <span className='text-[12px] font-medium text-indigo-500 bg-indigo-50 px-3 py-0.5 rounded-full'
+                                            onClick={() => {getSingleProductId(product._id)}}>
                                                 {product?.category}
                                             </span>
 
-                                            <span className='flex items-center gap-1 text-[12px] font-medium text-gray-700'>
+                                            <span className='flex items-center gap-1 text-[12px] font-medium text-gray-700'
+                                            onClick={() => {getSingleProductId(product._id)}}>
                                                 <span className='text-amber-400'>★</span>
                                                 {product?.rating}
                                             </span>
 
                                         </div>
 
-                                        <p className='text-[20px] font-bold text-gray-900 leading-snug h-7 overflow-hidden'>
+                                        <p className='text-[20px] font-bold text-gray-900 leading-snug h-7 overflow-hidden'
+                                        onClick={() => {getSingleProductId(product._id)}}>
                                             {product?.title}
                                         </p>
 
-                                        <p className='text-[14px] text-gray-400 mt-1 mb-3'>
+                                        <p className='text-[14px] text-gray-400 mt-1 mb-3'
+                                        onClick={() => {getSingleProductId(product._id)}}>
                                             {product?.author}
                                         </p>
 
                                         <div className='flex items-center justify-between px-1'>
 
-                                            <span className='text-[18px] font-bold text-indigo-500 mt-2'>
+                                            <span className='text-[18px] font-bold text-indigo-500 mt-2'
+                                            onClick={() => {getSingleProductId(product._id)}}>
                                                 ${product?.price}
                                             </span>
 

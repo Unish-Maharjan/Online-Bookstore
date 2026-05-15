@@ -6,6 +6,8 @@ import Cart from './pages/Cart.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import { Toaster } from 'react-hot-toast';
+import User from './pages/User.jsx';
+import Singleproduct from './components/Singleproduct.jsx';
 
 function App() {
   const router = createBrowserRouter([
@@ -24,6 +26,14 @@ function App() {
     {
       path: '/cart',
       element: <><Header/><Cart/><Footer/></>
+    },
+    {
+      path: '/user',
+      element: <><Header/><User/><Footer/></>
+    },
+    {
+      path: '/books/:id',
+      element: <><Header/><Singleproduct/><Footer/></>
     },
 
   ]);
