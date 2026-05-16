@@ -51,42 +51,54 @@ const Home = () => {
       <div className='text-3xl font-[Poppins] font-bold'>Browse by Category</div>
       <div className='font-[Poppins] text-gray-500'>Find Books in your favourite genres</div>
       <div className='grid grid-cols-6 gap-10 mt-12'>
+        <Link to="/books">
         <div className='h-30 w-45 flex flex-col items-start pl-6 justify-center text-[18px] 
           font-semibold font-[Poppins] rounded-[13px] bg-[#3081ff] shadow-lg text-white
           hover:cursor-pointer hover:scale-110 ease-out duration-500 hover:shadow-blue-400'>
           <img src='/stack-of-books.png' className='h-12 mb-2'/>
           Fiction
           </div>
+          </Link>
+          <Link to="/books">
         <div className='h-30 w-45 flex flex-col items-start pl-6 justify-center text-[18px] 
           font-semibold font-[Poppins] rounded-[13px] bg-[#af59ff] shadow-lg text-white
           hover:cursor-pointer hover:scale-110 ease-out duration-500 hover:shadow-purple-400'>
           <img src='/laptop.png' className='h-12 mb-2'/>
           Technology
           </div>
+          </Link>
+          <Link to="/books">
         <div className='h-30 w-45 flex flex-col items-start pl-6 justify-center text-[18px] 
           font-semibold font-[Poppins] rounded-[13px] bg-[#00c65b] shadow-lg text-white
           hover:cursor-pointer hover:scale-110 ease-out duration-500 hover:shadow-green-400'>
           <img src='/school-bag.png' className='h-12 mb-2'/>
           Business
           </div>
+          </Link>
+          <Link to="/books">
         <div className='h-30 w-45 flex flex-col items-start pl-6 justify-center text-[18px] 
           font-semibold font-[Poppins] rounded-[13px] bg-[#e7a700] shadow-lg text-white
           hover:cursor-pointer hover:scale-110 ease-out duration-500 hover:shadow-yellow-400'>
           <img src='/star.png' className='h-12 mb-2'/>
           Self Help
           </div>
+          </Link>
+          <Link to="/books">
         <div className='h-30 w-45 flex flex-col items-start pl-6 justify-center text-[18px] 
           font-semibold font-[Poppins] rounded-[13px] bg-[#f14097] shadow-lg text-white
           hover:cursor-pointer hover:scale-110 ease-out duration-500 hover:shadow-pink-400'>
           <img src='/microscope.png' className='h-12 mb-2'/>
           Science
           </div>
+          </Link>
+          <Link to="/books">
         <div className='h-30 w-45 flex flex-col items-start pl-6 justify-center text-[18px] 
           font-semibold font-[Poppins] rounded-[13px] bg-[#fd6f00] shadow-lg text-white
           hover:cursor-pointer hover:scale-110 ease-out duration-500 hover:shadow-orange-400'>
           <img src='/clock.png' className='h-12 mb-2'/>
           History
           </div>
+          </Link>
       </div>
     </div>
 
