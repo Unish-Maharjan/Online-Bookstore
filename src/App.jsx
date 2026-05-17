@@ -8,6 +8,9 @@ import Footer from './components/Footer.jsx';
 import { Toaster } from 'react-hot-toast';
 import User from './pages/User.jsx';
 import Singleproduct from './components/Singleproduct.jsx';
+import AdminDashboard from './pages/AdminDashboard.jsx';
+import AdminRoute from './components/AdminRoute.jsx';
+import ManageBooks from './components/Managebook.jsx';
 
 function App() {
   const router = createBrowserRouter([
@@ -34,6 +37,24 @@ function App() {
     {
       path: '/books/:id',
       element: <><Header/><Singleproduct/><Footer/></>
+    },
+    {
+      path: '/admin-dashboard',
+      element:
+      <AdminRoute>
+      <Header/>
+      <AdminDashboard/>
+      <Footer/>
+      </AdminRoute>
+    },
+    {
+      path: '/addbooks',
+      element:
+      <AdminRoute>
+      <Header/>
+      <ManageBooks/>
+      <Footer/>
+      </AdminRoute>
     },
 
   ]);

@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "./Dashboard";
 
 const API_BASE = "https://bookstore-backend-1-nc4r.onrender.com";
 
-// Safe Decode JWT
+// decode JWT
 function parseJwt(token) {
   try {
     return JSON.parse(atob(token.split(".")[1]));
@@ -13,8 +12,7 @@ function parseJwt(token) {
   }
 }
 
-function User() {
-  const navigate = useNavigate(); 
+function LoginForm() {
 
   const [tab, setTab] = useState("login");
   const [role, setRole] = useState("user");
@@ -24,11 +22,12 @@ function User() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [session, setSession] = useState(null);
-
   const isRegister = tab === "register";
   const isAdmin = role === "admin";
 
+
   const handleSubmit = async () => {
+
     if (!email || !password) {
       setError("Please fill all fields.");
       return;
@@ -43,13 +42,23 @@ function User() {
     setError("");
 
     try {
+        
       const endpoint = isRegister
         ? "/auth/register"
         : "/auth/login";
 
       const body = isRegister
-        ? { name, email, password, role }
-        : { email, password, role };
+        ? {
+            name,
+            email,
+            password,
+            role,
+          }
+        : {
+            email,
+            password,
+            role,
+          };
 
       const response = await fetch(`${API_BASE}${endpoint}`, {
         method: "POST",
@@ -69,15 +78,6 @@ function User() {
 
       const payload = parseJwt(data.token);
 
-      if (!payload) {
-        setError("Invalid token received.");
-        setLoading(false);
-        return;
-      }
-
-      // save token
-      localStorage.setItem("token", data.token);
-
       setSession({
         token: data.token,
         user: {
@@ -88,33 +88,28 @@ function User() {
         },
       });
 
-      if (payload.role === "admin") {
-        navigate("/admin-dashboard");
-      } else {
-        navigate("/dashboard");
-      }
-
     } catch (error) {
+
       setError("Server error. Please try again.");
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
+  // Logout
   const handleLogout = () => {
     setSession(null);
-    localStorage.removeItem("token");
-
-    setName("");
     setEmail("");
     setPassword("");
+    setName("");
     setRole("user");
     setTab("login");
-
-    navigate("/user");
   };
 
-
+  // After Login
   if (session) {
     return (
       <Dashboard
@@ -127,12 +122,14 @@ function User() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+
       <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md space-y-5">
 
         <h1 className="text-3xl font-bold text-center text-slate-800">
           {isRegister ? "Create Account" : "Welcome Back"}
         </h1>
 
+        {/* Name */}
         {isRegister && (
           <input
             type="text"
@@ -143,6 +140,7 @@ function User() {
           />
         )}
 
+        {/* Email */}
         <input
           type="email"
           placeholder="Enter email"
@@ -151,7 +149,7 @@ function User() {
           className="w-full border rounded-2xl px-4 py-3 outline-none"
         />
 
-     
+        {/* Password */}
         <input
           type="password"
           placeholder="Enter password"
@@ -160,46 +158,51 @@ function User() {
           className="w-full border rounded-2xl px-4 py-3 outline-none"
         />
 
-    
+        {/* Role */}
         <div className="grid grid-cols-2 gap-3">
 
           <button
             onClick={() => setRole("user")}
-            className={`py-3 rounded-2xl border ${
-              role === "user"
-                ? "bg-emerald-500 text-white"
-                : "bg-white"
-            }`}
+            className={`py-3 rounded-2xl border
+              ${
+                role === "user"
+                  ? "bg-emerald-500 text-white"
+                  : "bg-white"
+              }`}
           >
             User
           </button>
 
           <button
             onClick={() => setRole("admin")}
-            className={`py-3 rounded-2xl border ${
-              role === "admin"
-                ? "bg-indigo-500 text-white"
-                : "bg-white"
-            }`}
+            className={`py-3 rounded-2xl border
+              ${
+                role === "admin"
+                  ? "bg-indigo-500 text-white"
+                  : "bg-white"
+              }`}
           >
             Admin
           </button>
-
         </div>
 
+        {/* Error */}
         {error && (
           <div className="bg-red-50 text-red-500 text-sm rounded-xl p-3">
             {error}
           </div>
         )}
 
-       
+        {/* Submit */}
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className={`w-full py-3 rounded-2xl text-white font-semibold ${
-            isAdmin ? "bg-indigo-500" : "bg-emerald-500"
-          }`}
+          className={`w-full py-3 rounded-2xl text-white font-semibold
+            ${
+              isAdmin
+                ? "bg-indigo-500"
+                : "bg-emerald-500"
+            }`}
         >
           {loading
             ? "Please wait..."
@@ -208,7 +211,7 @@ function User() {
             : "Sign In"}
         </button>
 
-        
+        {/* Switch */}
         <button
           onClick={() =>
             setTab(isRegister ? "login" : "register")
@@ -219,10 +222,9 @@ function User() {
             ? "Already have an account?"
             : "Create new account"}
         </button>
-
       </div>
     </div>
   );
 }
 
-export default User;
+export default LoginForm;
