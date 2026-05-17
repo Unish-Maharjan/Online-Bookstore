@@ -12,7 +12,7 @@ export default function AdminDashboard() {
   return (
     <div className="flex bg-slate-50 font-[Poppins]">
 
-      <aside className="w-56 shrink-0 bg-white border-r border-slate-100 p-4 flex flex-col gap-2">
+      <aside className="w-75 shrink-0 bg-white border-r border-slate-100 p-4 flex flex-col gap-2">
 
         
         <div className="bg-indigo-50 rounded-xl p-3 flex items-center gap-3 mb-3">
@@ -21,15 +21,16 @@ export default function AdminDashboard() {
           </div>
           <div>
             <p className="text-sm font-semibold text-slate-800">Admin User</p>
-            <p className="text-xs text-slate-400">admin@bookstore.com</p>
+            <p className="text-xs text-slate-400">admin@gmail.com</p>
           </div>
         </div>
 
-
-        <Link to='/managebooks'><button className="px-8 font-medium text-gray-500 hover:cursor-pointer
-         hover:bg-gray-200 ease-out duration-300 rounded-[5px] py-1">Manage books</button></Link>
-        <Link to='/addbooks'><button className="px-8 font-medium text-gray-500 hover:cursor-pointer
-         hover:bg-gray-200 ease-out duration-300 w-full rounded-[5px] py-1">Add books</button></Link>
+        <div className="flex flex-col gap-3 bg-gray-100 rounded-[10px] py-4">
+        <Link to='/managebooks'><button className="px-8 font-medium text-black hover:cursor-pointer
+         hover:bg-blue-400 ease-out duration-300 w-[80%] m-auto active:bg-blue-600 active:text-white rounded-[5px] flex justify-center py-1">Manage books</button></Link>
+        <Link to='/addbooks'><button className="px-8 font-medium text-black hover:cursor-pointer
+         hover:bg-blue-400 active:bg-blue-600 active:text-white ease-out duration-300 w-[80%] m-auto rounded-[5px]  flex justify-center py-1">Add books</button></Link>
+         </div>
       </aside>
 
       <main className="flex-1 p-8">

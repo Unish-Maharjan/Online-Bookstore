@@ -4,6 +4,13 @@ export const bookApi = createApi({
   reducerPath: 'bookApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://bookstore-backend-1-nc4r.onrender.com/',
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   tagTypes: ['Books'],
   endpoints: (builder) => ({

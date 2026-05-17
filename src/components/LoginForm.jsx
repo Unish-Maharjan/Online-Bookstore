@@ -61,6 +61,8 @@ function LoginForm() {
       }
 
       const payload = parseJwt(data.token);
+      // Store token in localStorage
+      localStorage.setItem('authToken', data.token);
       setSession({
         token: data.token,
         user: {
@@ -79,6 +81,7 @@ function LoginForm() {
 
   // logout logic
   const handleLogout = () => {
+    localStorage.removeItem('authToken');
     setSession(null);
     setEmail("");
     setPassword("");
