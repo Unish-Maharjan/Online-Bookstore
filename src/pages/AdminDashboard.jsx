@@ -26,7 +26,10 @@ export default function AdminDashboard() {
         </div>
 
 
-        <Link to='/addbooks'><button>Add books</button></Link>
+        <Link to='/managebooks'><button className="px-8 font-medium text-gray-500 hover:cursor-pointer
+         hover:bg-gray-200 ease-out duration-300 rounded-[5px] py-1">Manage books</button></Link>
+        <Link to='/addbooks'><button className="px-8 font-medium text-gray-500 hover:cursor-pointer
+         hover:bg-gray-200 ease-out duration-300 w-full rounded-[5px] py-1">Add books</button></Link>
       </aside>
 
       <main className="flex-1 p-8">

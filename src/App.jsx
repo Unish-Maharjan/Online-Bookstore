@@ -11,6 +11,7 @@ import Singleproduct from './components/Singleproduct.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import AdminRoute from './components/AdminRoute.jsx';
 import ManageBooks from './components/Managebook.jsx';
+import Addbooks from './components/Addbooks.jsx';
 
 function App() {
   const router = createBrowserRouter([
@@ -48,11 +49,20 @@ function App() {
       </AdminRoute>
     },
     {
-      path: '/addbooks',
+      path: '/managebooks',
       element:
       <AdminRoute>
       <Header/>
       <ManageBooks/>
+      <Footer/>
+      </AdminRoute>
+    },
+    {
+      path: '/addbooks',
+      element:
+      <AdminRoute>
+      <Header/>
+      <Addbooks/>
       <Footer/>
       </AdminRoute>
     },

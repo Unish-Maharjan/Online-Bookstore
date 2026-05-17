@@ -5,7 +5,7 @@ export const initialState = {
 export function CartReducer(state, action) {
   switch (action.type) {
 
-    // ADD TO CART
+   
     case "ADD_TO_CART": {
       const item = action.payload;
 
@@ -13,7 +13,7 @@ export function CartReducer(state, action) {
         (cartItem) => cartItem._id === item._id
       );
 
-      // IF ITEM EXISTS
+    
       if (existingItem) {
         return {
           ...state,
@@ -28,7 +28,7 @@ export function CartReducer(state, action) {
         };
       }
 
-      // NEW ITEM
+
       return {
         ...state,
         cartItems: [
@@ -41,7 +41,7 @@ export function CartReducer(state, action) {
       };
     }
 
-    // DECREMENT
+
     case "DECREMENT": {
       const id = action.payload;
 
@@ -60,7 +60,7 @@ export function CartReducer(state, action) {
       };
     }
 
-    // INCREMENT
+    
     case "INCREMENT": {
       const id = action.payload;
 
@@ -77,7 +77,7 @@ export function CartReducer(state, action) {
       };
     }
 
-    // REMOVE
+
     case "REMOVE_FROM_CART": {
       const id = action.payload;
 
