@@ -1,41 +1,65 @@
 import { useState } from "react";
 import { useGetBooksQuery } from "../services/bookApi";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 
 export default function AdminDashboard() {
-  // track which nav item is selected
   const [currentPage, setCurrentPage] = useState("Dashboard");
+  const { data } = useGetBooksQuery();
+  const navigate = useNavigate();
 
-  const {data} = useGetBooksQuery();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/user");
+  };
 
   return (
     <div className="flex bg-slate-50 font-[Poppins]">
 
       <aside className="w-75 shrink-0 bg-white border-r border-slate-100 p-4 flex flex-col gap-2">
 
-        
         <div className="bg-indigo-50 rounded-xl p-3 flex items-center gap-3 mb-3">
           <div className="w-9 h-9 rounded-full bg-indigo-300 flex items-center justify-center text-white font-bold text-sm">
             A
           </div>
           <div>
-            <p className="text-sm font-semibold text-slate-800">Admin User</p>
-            <p className="text-xs text-slate-400">admin@gmail.com</p>
+            <p className="text-sm font-semibold text-slate-800">{user.name || "Admin User"}</p>
+            <p className="text-xs text-slate-400">{user.email || "admin@gmail.com"}</p>
           </div>
         </div>
 
         <div className="flex flex-col gap-3 bg-gray-100 rounded-[10px] py-4">
-        <Link to='/managebooks'><button className="px-8 font-medium text-black hover:cursor-pointer
-         hover:bg-blue-400 ease-out duration-300 w-[80%] m-auto active:bg-blue-600 active:text-white rounded-[5px] flex justify-center py-1">Manage books</button></Link>
-        <Link to='/addbooks'><button className="px-8 font-medium text-black hover:cursor-pointer
-         hover:bg-blue-400 active:bg-blue-600 active:text-white ease-out duration-300 w-[80%] m-auto rounded-[5px]  flex justify-center py-1">Add books</button></Link>
-         </div>
+          <Link to='/managebooks'>
+            <button className="px-8 font-medium text-black hover:cursor-pointer
+             hover:bg-blue-400 ease-out duration-300 w-[80%] m-auto active:bg-blue-600 active:text-white rounded-[5px] flex justify-center py-1">
+              Manage books
+            </button>
+          </Link>
+          <Link to='/addbooks'>
+            <button className="px-8 font-medium text-black hover:cursor-pointer
+             hover:bg-blue-400 active:bg-blue-600 active:text-white ease-out duration-300 w-[80%] m-auto rounded-[5px] flex justify-center py-1">
+              Add books
+            </button>
+          </Link>
+        </div>
+
+        {/* Logout button */}
+        <button
+          onClick={handleLogout}
+          className="mt-auto px-8 font-medium text-white bg-red-500 hover:bg-red-600 active:bg-red-700
+           ease-out duration-300 w-[80%] m-auto rounded-[10px] flex justify-center items-center gap-2 py-2"
+        >
+          <i className="fa-solid fa-right-from-bracket"></i>
+          Logout
+        </button>
+
       </aside>
 
       <main className="flex-1 p-8">
         <div className="max-w-5xl mx-auto space-y-8">
-
 
           <div className="flex items-center justify-between">
             <div>
@@ -70,7 +94,6 @@ export default function AdminDashboard() {
               <p className="text-2xl font-bold text-slate-900">$45,678</p>
             </div>
 
-            {/* Orders */}
             <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:-translate-y-1 transition-transform">
               <div className="flex justify-between items-start mb-3">
                 <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-lg">🛒</div>
@@ -80,7 +103,6 @@ export default function AdminDashboard() {
               <p className="text-2xl font-bold text-slate-900">567</p>
             </div>
 
-            {/* Customers */}
             <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:-translate-y-1 transition-transform">
               <div className="flex justify-between items-start mb-3">
                 <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-lg">👥</div>
@@ -94,31 +116,27 @@ export default function AdminDashboard() {
 
           <div className="grid grid-cols-2 gap-5 h-150 overflow-hidden">
 
-            {/* Top selling books */}
             <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="font-bold text-slate-800">Top Selling Books</h2>
-                <button className="text-xs text-indigo-600 font-semibold hover:underline ">View All ↗</button>
+                <button className="text-xs text-indigo-600 font-semibold hover:underline">View All ↗</button>
               </div>
 
-              {data?.map((data) => (
-                <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold flex items-center justify-center">
-                  </span>
-                  <span className="text-xl"><img src={data.image} className="h-7"/></span>
+              {data?.map((book) => (
+                <div key={book._id} className="flex items-center gap-3 mb-3">
+                  <span className="text-xl"><img src={book.image} className="h-7" /></span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-slate-800 truncate">{data.title}</p>
-                    <p className="text-xs text-slate-400">{data.author}</p>
+                    <p className="text-sm font-semibold text-slate-800 truncate">{book.title}</p>
+                    <p className="text-xs text-slate-400">{book.author}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-indigo-600">${data.price}</p>
-                    <p className="text-xs text-amber-400">★ {data.rating}</p>
+                    <p className="text-sm font-bold text-indigo-600">${book.price}</p>
+                    <p className="text-xs text-amber-400">★ {book.rating}</p>
                   </div>
                 </div>
-              ))};
+              ))}
             </div>
 
-            {/* Recent orders */}
             <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="font-bold text-slate-800">Recent Orders</h2>
@@ -188,9 +206,6 @@ export default function AdminDashboard() {
 
           </div>
 
-          {/* ============================
-              QUICK ACTION BUTTONS
-          ============================ */}
           <div className="grid grid-cols-3 gap-5">
 
             <div
