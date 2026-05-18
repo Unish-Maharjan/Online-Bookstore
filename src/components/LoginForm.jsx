@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Dashboard from "./Dashboard";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE = "https://bookstore-backend-1-nc4r.onrender.com";
 
@@ -13,6 +13,7 @@ function parseJwt(token) {
 }
 
 function LoginForm() {
+  const navigate = useNavigate();
 
   // ui state
   const [tab, setTab] = useState("login");
@@ -22,7 +23,6 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [session, setSession] = useState(null);
 
   const isRegister = tab === "register";
   const isAdmin = role === "admin";
@@ -61,44 +61,29 @@ function LoginForm() {
       }
 
       const payload = parseJwt(data.token);
-      // Store token in localStorage
-      localStorage.setItem('authToken', data.token);
-      setSession({
-        token: data.token,
-        user: {
-          id: payload.id,
-          role: payload.role,
-          name: payload.name || name,
-          email,
-        },
-      });
+
+      // Store token and user info in localStorage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify({
+        id: payload.id,
+        role: payload.role,
+        name: payload.name || name,
+        email,
+      }));
+
+      // Redirect based on role
+      if (payload.role === "admin") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/books");
+      }
+
     } catch (err) {
       setError("Couldn't reach the server. Try later?");
     } finally {
       setLoading(false);
     }
   };
-
-  // logout logic
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    setSession(null);
-    setEmail("");
-    setPassword("");
-    setName("");
-    setRole("user");
-    setTab("login");
-  };
-
-  if (session) {
-    return (
-      <Dashboard
-        user={session.user}
-        token={session.token}
-        onLogout={handleLogout}
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">

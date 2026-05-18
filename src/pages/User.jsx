@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Dashboard from "../components/Dashboard";
 
 const API_BASE = "https://bookstore-backend-1-nc4r.onrender.com";
 
@@ -14,7 +13,21 @@ function parseJwt(token) {
 }
 
 function User() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
+  // If already logged in, redirect immediately
+  const existingToken = localStorage.getItem("token");
+  if (existingToken) {
+    const payload = parseJwt(existingToken);
+    if (payload) {
+      if (payload.role === "admin") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
+      return null;
+    }
+  }
 
   const [tab, setTab] = useState("login");
   const [role, setRole] = useState("user");
@@ -23,7 +36,6 @@ function User() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [session, setSession] = useState(null);
 
   const isRegister = tab === "register";
   const isAdmin = role === "admin";
@@ -43,19 +55,14 @@ function User() {
     setError("");
 
     try {
-      const endpoint = isRegister
-        ? "/auth/register"
-        : "/auth/login";
-
+      const endpoint = isRegister ? "/auth/register" : "/auth/login";
       const body = isRegister
         ? { name, email, password, role }
         : { email, password, role };
 
       const response = await fetch(`${API_BASE}${endpoint}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
 
@@ -75,18 +82,14 @@ function User() {
         return;
       }
 
-      // save token
+      // Save token and user info in localStorage
       localStorage.setItem("token", data.token);
-
-      setSession({
-        token: data.token,
-        user: {
-          id: payload.id,
-          role: payload.role,
-          name: payload.name || name,
-          email,
-        },
-      });
+      localStorage.setItem("user", JSON.stringify({
+        id: payload.id,
+        role: payload.role,
+        name: payload.name || name,
+        email,
+      }));
 
       if (payload.role === "admin") {
         navigate("/admin-dashboard");
@@ -100,30 +103,6 @@ function User() {
       setLoading(false);
     }
   };
-
-  const handleLogout = () => {
-    setSession(null);
-    localStorage.removeItem("token");
-
-    setName("");
-    setEmail("");
-    setPassword("");
-    setRole("user");
-    setTab("login");
-
-    navigate("/user");
-  };
-
-
-  if (session) {
-    return (
-      <Dashboard
-        user={session.user}
-        token={session.token}
-        onLogout={handleLogout}
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
@@ -151,7 +130,6 @@ function User() {
           className="w-full border rounded-2xl px-4 py-3 outline-none"
         />
 
-     
         <input
           type="password"
           placeholder="Enter password"
@@ -160,31 +138,23 @@ function User() {
           className="w-full border rounded-2xl px-4 py-3 outline-none"
         />
 
-    
         <div className="grid grid-cols-2 gap-3">
-
           <button
             onClick={() => setRole("user")}
             className={`py-3 rounded-2xl border ${
-              role === "user"
-                ? "bg-emerald-500 text-white"
-                : "bg-white"
+              role === "user" ? "bg-emerald-500 text-white" : "bg-white"
             }`}
           >
             User
           </button>
-
           <button
             onClick={() => setRole("admin")}
             className={`py-3 rounded-2xl border ${
-              role === "admin"
-                ? "bg-indigo-500 text-white"
-                : "bg-white"
+              role === "admin" ? "bg-indigo-500 text-white" : "bg-white"
             }`}
           >
             Admin
           </button>
-
         </div>
 
         {error && (
@@ -193,7 +163,6 @@ function User() {
           </div>
         )}
 
-       
         <button
           onClick={handleSubmit}
           disabled={loading}
@@ -201,23 +170,14 @@ function User() {
             isAdmin ? "bg-indigo-500" : "bg-emerald-500"
           }`}
         >
-          {loading
-            ? "Please wait..."
-            : isRegister
-            ? "Create Account"
-            : "Sign In"}
+          {loading ? "Please wait..." : isRegister ? "Create Account" : "Sign In"}
         </button>
 
-        
         <button
-          onClick={() =>
-            setTab(isRegister ? "login" : "register")
-          }
+          onClick={() => setTab(isRegister ? "login" : "register")}
           className="text-indigo-500 text-sm w-full"
         >
-          {isRegister
-            ? "Already have an account?"
-            : "Create new account"}
+          {isRegister ? "Already have an account?" : "Create new account"}
         </button>
 
       </div>

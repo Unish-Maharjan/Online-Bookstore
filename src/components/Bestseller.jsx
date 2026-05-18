@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Link } from 'react-router';
 import { useCart } from '../components/CartContext' 
@@ -10,29 +10,24 @@ import { useGetBooksQuery } from '../services/bookApi';
 
 const Bestseller = () => {
 
+  const { addToCart } = useCart();
 
-  const { dispatch } = useCart();
-  
-      const handleAddToCart = (item) => {
-          dispatch({
-              type: "ADD_TO_CART",
-              payload: item,
-              });
-  
-          toast.success(`${item.title} added to cart!`, {
-              duration: 3000,
-              style: {
-                  padding: '14px',
-                  color: '#12923d',
-                  background: '#ecfdf3',
-              },
-              iconTheme: {
-                  primary: '#12923d',
-              },
-              });
-          };
+  const handleAddToCart = async (item) => {
+    await addToCart(item);
+    toast.success(`${item.title} added to cart!`, {
+      duration: 3000,
+      style: {
+        padding: '14px',
+        color: '#12923d',
+        background: '#ecfdf3',
+      },
+      iconTheme: {
+        primary: '#12923d',
+      },
+    });
+  };
 
-      const {data} = useGetBooksQuery();
+  const { data } = useGetBooksQuery();
 
   return (
     <>
@@ -62,7 +57,6 @@ const Bestseller = () => {
     </div>
   </div>
 
-  
       <Swiper
       slidesPerView={4}
       spaceBetween={18}

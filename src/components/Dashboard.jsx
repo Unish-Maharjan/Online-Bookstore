@@ -1,10 +1,20 @@
-function Dashboard({ user, token, onLogout }) {
+import { useNavigate } from "react-router-dom";
 
+function Dashboard() {
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const token = localStorage.getItem("token");
   const { role, name, email } = user;
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/user");
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-
       <div className="bg-white shadow-xl rounded-3xl p-8 w-full max-w-md">
 
         <h1 className="text-3xl font-bold">
@@ -28,7 +38,7 @@ function Dashboard({ user, token, onLogout }) {
         </div>
 
         <button
-          onClick={onLogout}
+          onClick={handleLogout}
           className="mt-6 w-full bg-slate-800 text-white py-3 rounded-2xl"
         >
           Logout

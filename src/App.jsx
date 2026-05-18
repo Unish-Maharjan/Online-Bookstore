@@ -12,6 +12,7 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import AdminRoute from './components/AdminRoute.jsx';
 import ManageBooks from './components/Managebook.jsx';
 import Addbooks from './components/Addbooks.jsx';
+import Dashboard from './components/Dashboard.jsx';
 
 function App() {
   const router = createBrowserRouter([
@@ -47,6 +48,16 @@ function App() {
       <AdminDashboard/>
       <Footer/>
       </AdminRoute>
+    },
+    {
+      path: '/dashboard',
+      element:
+      <>
+      <Header/>
+      <Dashboard/>
+      <Footer/>
+      </>
+
     },
     {
       path: '/managebooks',
