@@ -14,13 +14,11 @@ export const bookApi = createApi({
   }),
   tagTypes: ['Books'],
   endpoints: (builder) => ({
-    // GET all books
     getBooks: builder.query({
       query: () => 'books',
       providesTags: ['Books'],
     }),
 
-    // POST add book
     addBook: builder.mutation({
       query: (newBook) => ({
         url: 'books',
@@ -30,7 +28,6 @@ export const bookApi = createApi({
       invalidatesTags: ['Books'],
     }),
 
-    // DELETE book
     deleteBook: builder.mutation({
       query: (id) => ({
         url: `books/${id}`,

@@ -8,7 +8,7 @@ const Singleproduct = () => {
   const [singleData, setSingleData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { addToCart } = useCart(); // use addToCart instead of dispatch
+  const { addToCart } = useCart(); 
 
   const params = useParams();
 
