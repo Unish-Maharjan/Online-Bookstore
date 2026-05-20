@@ -14,14 +14,13 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-white shadow-xl rounded-3xl p-8 w-full max-w-md">
-
-        <h1 className="text-3xl font-bold">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8">
+      <div className="bg-white shadow-xl rounded-3xl p-6 sm:p-8 w-full max-w-md">
+        <h1 className="text-2xl sm:text-3xl font-bold break-words">
           Welcome {name}
         </h1>
 
-        <p className="mt-2 text-slate-500">
+        <p className="mt-2 text-slate-500 text-sm sm:text-base break-all">
           {email}
         </p>
 
@@ -39,7 +38,7 @@ function Dashboard() {
 
         <button
           onClick={handleLogout}
-          className="mt-6 w-full bg-slate-800 text-white py-3 rounded-2xl"
+          className="mt-6 w-full bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-white py-3 rounded-2xl text-sm sm:text-base transition-colors"
         >
           Logout
         </button>

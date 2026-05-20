@@ -13,14 +13,13 @@ const Header = () => {
   const admin = JSON.parse(localStorage.getItem('admin') || 'null');
 
   const handleUserClick = () => {
-    setMenuOpen(false);
-    if (admin) {
-      navigate('/admin-dashboard');
-    } else if (user) {
-      navigate('/user');
-    } else {
-      navigate('/login');
-    }
+  setMenuOpen(false);
+
+  if (admin) {
+    navigate('/admin-dashboard');
+  } else {
+    navigate('/user');
+  }
   };
 
   return (
