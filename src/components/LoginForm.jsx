@@ -39,7 +39,11 @@ function LoginForm() {
 
       const res = await fetch(`${API_BASE}${endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+
+           "Content-Type": "application/json" 
+           
+          },
         body: JSON.stringify(body),
       });
 
@@ -75,7 +79,8 @@ function LoginForm() {
             placeholder="Your name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border rounded-2xl px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-indigo-300"
+            className="w-full border rounded-2xl px-4 py-2.5 sm:py-3 text-sm sm:text-base
+             outline-none focus:ring-2 focus:ring-indigo-300"
           />
         )}
 

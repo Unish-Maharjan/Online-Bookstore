@@ -16,7 +16,7 @@ function Dashboard() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8">
       <div className="bg-white shadow-xl rounded-3xl p-6 sm:p-8 w-full max-w-md">
-        <h1 className="text-2xl sm:text-3xl font-bold break-words">
+        <h1 className="text-2xl sm:text-3xl font-bold wrap-break-words">
           Welcome {name}
         </h1>
 

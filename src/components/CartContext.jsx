@@ -5,7 +5,7 @@ const CartContext = createContext();
 
 const API_BASE_URL = "https://bookstore-backend-1-nc4r.onrender.com";
 
-// decode JWT to get userId
+
 function parseJwt(token) {
   try {
     return JSON.parse(atob(token.split(".")[1]));
