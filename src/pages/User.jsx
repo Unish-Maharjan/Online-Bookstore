@@ -173,10 +173,8 @@ function User() {
           {loading ? "Please wait..." : isRegister ? "Create Account" : "Sign In"}
         </button>
 
-        <button
-          onClick={() => setTab(isRegister ? "login" : "register")}
-          className="text-indigo-500 text-sm w-full"
-        >
+        <button onClick={() => setTab(isRegister ? "login" : "register")}
+          className="text-indigo-500 text-sm w-full">
           {isRegister ? "Already have an account?" : "Create new account"}
         </button>
 
