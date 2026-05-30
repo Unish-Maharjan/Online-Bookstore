@@ -35,7 +35,7 @@ const Singleproduct = () => {
   useEffect(() => { getProductData(); }, [params.id]);
 
   const handleAddToCart = async (item) => {
-    await addToCart(item); // calls API + dispatches to reducer
+    await addToCart(item); 
 
     toast.success(`${item.title} added to cart!`, {
       duration: 3000,
