@@ -38,7 +38,7 @@ const Singleproduct = () => {
     await addToCart(item); 
 
     toast.success(`${item.title} added to cart!`, {
-      duration: 3000,
+      duration: 3500,
       style: {
         padding: '14px',
         color: '#12923d',
@@ -64,7 +64,7 @@ const Singleproduct = () => {
             <div className="overflow-hidden rounded-[20px] shadow-2xl">
               <img
                 src={singleData?.image}
-                alt="Book"
+                alt="book"
                 className="w-120 object-cover hover:scale-105 duration-500"
               />
             </div>
