@@ -1,42 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { useCart } from '../components/CartContext' 
+import { useCart } from '../components/CartContext'
 import toast from 'react-hot-toast'
-import { Star, ShoppingCart, Minus, Plus, Package} from "lucide-react";
+import { Star, ShoppingCart, Package } from "lucide-react";
+import { useGetSingleBookQuery } from '../services/bookApi'; 
 
 const Singleproduct = () => {
-  const [singleData, setSingleData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { addToCart } = useCart(); 
-
+  const { addToCart } = useCart();
   const params = useParams();
 
-  const API_BASE_URL = "https://bookstore-backend-1-nc4r.onrender.com";
-
-  const getProductData = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/books/${params.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      setSingleData(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { getProductData(); }, [params.id]);
+  const { data: singleData, isLoading, isError } = useGetSingleBookQuery(params.id);
 
   const handleAddToCart = async (item) => {
-    await addToCart(item); 
-
+    await addToCart(item);
     toast.success(`${item.title} added to cart!`, {
       duration: 3500,
       style: {
@@ -50,11 +26,23 @@ const Singleproduct = () => {
     });
   };
 
+  if (isLoading) return (
+    <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center">
+      <p className="text-xl text-gray-500 font-[Poppins]">Loading...</p>
+    </div>
+  );
+
+  if (isError) return (
+    <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center">
+      <p className="text-xl text-red-500 font-[Poppins]">Something went wrong!</p>
+    </div>
+  );
+
   return (
     <>
       <Link to='/books'>
         <div className="ml-20 mt-5 text-gray-500 font-[Poppins] bg-[#f5f5f7] font-semibold hover:text-blue-600">
-          <i class="fa-solid fa-arrow-left-long"></i> back to books
+          <i className="fa-solid fa-arrow-left-long"></i> back to books
         </div>
       </Link>
       <div className="bg-[#f5f5f7] min-h-screen flex items-center px-6 py-10 h-[80vh]">
