@@ -104,7 +104,7 @@ const Footer = () => {
         <div className="sm:col-span-2 lg:col-span-1">
           <p className="text-[11px] font-semibold tracking-[0.08em] text-[#5951e6] uppercase mb-4">Stay in the loop</p>
           <p className="text-[14px] text-[#8b8fa8] leading-[1.6] mb-4">
-            New arrivals, reading picks, and exclusive deals — weekly, no spam.
+            New arrivals, reading picks, and exclusive deals.
           </p>
           {subscribed ? (
             <p className="text-[14px] text-[#a09af7] font-medium">
