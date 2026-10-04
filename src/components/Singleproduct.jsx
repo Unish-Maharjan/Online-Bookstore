@@ -1,19 +1,24 @@
-import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCart } from '../components/CartContext'
 import toast from 'react-hot-toast'
 import { Star, ShoppingCart, Package } from "lucide-react";
 import { useGetSingleBookQuery } from '../services/bookApi'; 
 
-const Singleproduct = () => {
-  const { addToCart } = useCart();
-  const params = useParams();
+class BookProductModel {
+  static getRatingStars(rating = 0) {
+    return Array.from({ length: 5 }, (_, index) => index < Math.round(rating));
+  }
+}
 
-  const { data: singleData, isLoading, isError } = useGetSingleBookQuery(params.id);
+class ProductService {
+  constructor({ addToCart, notify }) {
+    this.addToCart = addToCart;
+    this.notify = notify;
+  }
 
-  const handleAddToCart = async (item) => {
-    await addToCart(item);
-    toast.success(`${item.title} added to cart!`, {
+  async addToCartWithToast(item) {
+    await this.addToCart(item);
+    this.notify.success(`${item.title} added to cart!`, {
       duration: 3500,
       style: {
         padding: '14px',
@@ -24,6 +29,19 @@ const Singleproduct = () => {
         primary: '#12923d',
       },
     });
+  }
+}
+
+const Singleproduct = () => {
+  const { addToCart } = useCart();
+  const params = useParams();
+
+  const { data: singleData, isLoading, isError } = useGetSingleBookQuery(params.id);
+  const productService = new ProductService({ addToCart, notify: toast });
+  const ratingStars = BookProductModel.getRatingStars(singleData?.rating || 0);
+
+  const handleAddToCart = async (item) => {
+    await productService.addToCartWithToast(item);
   };
 
   if (isLoading) return (
@@ -74,11 +92,14 @@ const Singleproduct = () => {
 
             <div className="flex items-center gap-4">
               <div className="flex items-center text-orange-400 gap-1">
-                <Star fill="currentColor" size={24} />
-                <Star fill="currentColor" size={24} />
-                <Star fill="currentColor" size={24} />
-                <Star fill="currentColor" size={24} />
-                <Star size={24} />
+                {ratingStars.map((filled, index) => (
+                  <Star
+                    key={index}
+                    fill={filled ? "currentColor" : "none"}
+                    size={24}
+                    strokeWidth={1.8}
+                  />
+                ))}
               </div>
               <span className="text-xl text-gray-700">{singleData?.rating}</span>
               <div className="h-6 w-px bg-gray-300"></div>

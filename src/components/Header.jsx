@@ -1,6 +1,41 @@
-import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { useCart } from './CartContext'
+import { useState } from 'react'
+
+class HeaderModel {
+  static getStoredUser() {
+    try {
+      return JSON.parse(localStorage.getItem('user') || 'null')
+    } catch {
+      return null
+    }
+  }
+
+  static getStoredAdmin() {
+    try {
+      return JSON.parse(localStorage.getItem('admin') || 'null')
+    } catch {
+      return null
+    }
+  }
+
+  static getTotalItems(cartItems = []) {
+    return cartItems.reduce((sum, item) => sum + Number(item.quantity || 0), 0)
+  }
+
+  static getUserLabel(user, admin) {
+    if (admin) return 'Dashboard'
+    if (user) return 'My Account'
+    return 'Sign In'
+  }
+
+  static getNavigationLinks() {
+    return [
+      { to: '/home', label: 'Home', icon: 'fa-house' },
+      { to: '/books', label: 'Books', icon: 'fa-book' },
+    ]
+  }
+}
 
 const Header = () => {
   const navigate = useNavigate()
@@ -8,9 +43,9 @@ const Header = () => {
   const { state } = useCart()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const totalItems = state.cartItems.reduce((sum, item) => sum + item.quantity, 0)
-  const user = JSON.parse(localStorage.getItem('user') || 'null')
-  const admin = JSON.parse(localStorage.getItem('admin') || 'null')
+  const user = HeaderModel.getStoredUser()
+  const admin = HeaderModel.getStoredAdmin()
+  const totalItems = HeaderModel.getTotalItems(state.cartItems)
 
   const isActive = (path) => location.pathname === path
 
@@ -19,12 +54,8 @@ const Header = () => {
     navigate(admin ? '/admin-dashboard' : '/user')
   }
 
-  const userLabel = admin ? 'Dashboard' : user ? 'My Account' : 'Sign In'
-
-  const navLinks = [
-    { to: '/home', label: 'Home', icon: 'fa-house' },
-    { to: '/books', label: 'Books', icon: 'fa-book' },
-  ]
+  const userLabel = HeaderModel.getUserLabel(user, admin)
+  const navLinks = HeaderModel.getNavigationLinks()
 
   return (
     <>

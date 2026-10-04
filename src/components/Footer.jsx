@@ -1,5 +1,38 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router'
+
+class FooterModel {
+  static getNavigationLinks() {
+    return [
+      { to: '/home', label: 'Home' },
+      { to: '/books', label: 'Books', badge: 'New' },
+      { to: '/cart', label: 'Cart' },
+      { to: '/user', label: 'My Account' },
+    ]
+  }
+
+  static getCompanyLinks() {
+    return [
+      { to: '/about', label: 'About Us' },
+      { to: '/blog', label: 'Blog' },
+      { to: '/careers', label: 'Careers' },
+      { to: '/contact', label: 'Contact' },
+    ]
+  }
+
+  static getSocialLinks() {
+    return [
+      { href: '#', icon: 'fa-facebook-f', label: 'Facebook' },
+      { href: '#', icon: 'fa-x-twitter', label: 'X / Twitter' },
+      { href: '#', icon: 'fa-instagram', label: 'Instagram' },
+      { href: '#', icon: 'fa-youtube', label: 'YouTube' },
+    ]
+  }
+
+  static getLegalLinks() {
+    return ['Privacy Policy', 'Terms of Use', 'Cookies']
+  }
+}
 
 const Footer = () => {
   const [email, setEmail] = useState('')
@@ -12,26 +45,10 @@ const Footer = () => {
     setEmail('')
   }
 
-  const navLinks = [
-    { to: '/home', label: 'Home' },
-    { to: '/books', label: 'Books', badge: 'New' },
-    { to: '/cart', label: 'Cart' },
-    { to: '/user', label: 'My Account' },
-  ]
-
-  const companyLinks = [
-    { to: '/about', label: 'About Us' },
-    { to: '/blog', label: 'Blog' },
-    { to: '/careers', label: 'Careers' },
-    { to: '/contact', label: 'Contact' },
-  ]
-
-  const socials = [
-    { href: '#', icon: 'fa-facebook-f', label: 'Facebook' },
-    { href: '#', icon: 'fa-x-twitter', label: 'X / Twitter' },
-    { href: '#', icon: 'fa-instagram', label: 'Instagram' },
-    { href: '#', icon: 'fa-youtube', label: 'YouTube' },
-  ]
+  const navLinks = FooterModel.getNavigationLinks()
+  const companyLinks = FooterModel.getCompanyLinks()
+  const socials = FooterModel.getSocialLinks()
+  const legalLinks = FooterModel.getLegalLinks()
 
   return (
     <>
@@ -136,7 +153,7 @@ const Footer = () => {
       <div className="max-w-[1100px] mx-auto px-6 mt-12 py-5 border-t border-white/[0.07] flex flex-wrap justify-between items-center gap-3">
         <span className="text-[13px] text-[#555872]">© 2026 BookStore. All rights reserved.</span>
         <div className="flex gap-5">
-          {['Privacy Policy', 'Terms of Use', 'Cookies'].map((label) => (
+          {legalLinks.map((label) => (
             <a
               key={label}
               href="#"

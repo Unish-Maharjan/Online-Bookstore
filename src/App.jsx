@@ -1,4 +1,4 @@
-import { createBrowserRouter, Route, RouterProvider, Routes } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home.jsx'
 import Books from './pages/Books.jsx';
@@ -13,6 +13,8 @@ import AdminRoute from './components/AdminRoute.jsx';
 import ManageBooks from './components/Managebook.jsx';
 import Addbooks from './components/Addbooks.jsx';
 import Dashboard from './components/Dashboard.jsx';
+import Checkout from './pages/Checkout.jsx';
+import Orders from './pages/Orders.jsx';
 
 function App() {
   const router = createBrowserRouter([
@@ -31,6 +33,14 @@ function App() {
     {
       path: '/cart',
       element: <><Header/><Cart/><Footer/></>
+    },
+    {
+      path: '/checkout',
+      element: <><Header/><Checkout/><Footer/></>
+    },
+    {
+      path: '/orders',
+      element: <><Header/><Orders/><Footer/></>
     },
     {
       path: '/user',

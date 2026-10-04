@@ -39,6 +39,7 @@ export default function CartSummary() {
 
       <button
         onClick={() => navigate("/checkout")}
+        disabled={cartItems.length === 0}
         className="mt-5 w-full py-3 sm:py-3.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold text-sm sm:text-[15px] rounded-xl transition-colors"
       >
         Proceed to Checkout

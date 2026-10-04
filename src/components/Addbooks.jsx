@@ -3,25 +3,87 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAddBookMutation } from '../services/bookApi';
 
+class BookFormModel {
+  static createInitialState() {
+    return {
+      title: "",
+      author: "",
+      price: "",
+      description: "",
+      category: "",
+      stock: "",
+      rating: "",
+    };
+  }
+
+  static validate(formData) {
+    const { title, author, price, description, rating } = formData;
+    return Boolean(title && author && price && description && rating);
+  }
+
+  static buildPayload(formData, imageFile) {
+    const bookData = new FormData();
+    Object.keys(formData).forEach((key) => {
+      bookData.append(key, formData[key]);
+    });
+
+    if (imageFile) {
+      bookData.append("image", imageFile);
+    }
+
+    return bookData;
+  }
+}
+
+class BookFormService {
+  constructor({ addBook, navigate, notify }) {
+    this.addBook = addBook;
+    this.navigate = navigate;
+    this.notify = notify;
+  }
+
+  async submit(formData, imageFile) {
+    if (!BookFormModel.validate(formData)) {
+      this.notify.error("Please fill all required fields");
+      return false;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      this.notify.error("Please login first");
+      this.navigate("/user");
+      return false;
+    }
+
+    const bookData = BookFormModel.buildPayload(formData, imageFile);
+
+    try {
+      await this.addBook(bookData).unwrap();
+      this.notify.success("Book added successfully");
+      return true;
+    } catch (error) {
+      this.notify.error(error?.data?.message || "Something went wrong");
+      return false;
+    }
+  }
+}
+
 const Addbooks = () => {
   const navigate = useNavigate();
   const [addBook, { isLoading }] = useAddBookMutation();
 
-  const [formData, setFormData] = useState({
-    title: "",
-    author: "",
-    price: "",
-    description: "",
-    category: "",
-    stock: "",
-    rating: "",
-  });
-
+  const [formData, setFormData] = useState(BookFormModel.createInitialState());
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
 
   const inputStyle =
     "w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm";
+
+  const bookFormService = new BookFormService({
+    addBook,
+    navigate,
+    notify: toast,
+  });
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -36,15 +98,7 @@ const Addbooks = () => {
   }
 
   function clearForm() {
-    setFormData({
-      title: "",
-      author: "",
-      price: "",
-      description: "",
-      category: "",
-      stock: "",
-      rating: "",
-    });
+    setFormData(BookFormModel.createInitialState());
     setImageFile(null);
     setPreviewImage("");
   }
@@ -52,34 +106,10 @@ const Addbooks = () => {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const { title, author, price, description, rating } = formData;
-    if (!title || !author || !price || !description || !rating) {
-      toast.error("Please fill all required fields");
-      return;
-    }
+    const isSuccess = await bookFormService.submit(formData, imageFile);
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("Please login first");
-      navigate("/user");
-      return;
-    }
-
-    // Build FormData for multipart (image upload)
-    const bookData = new FormData();
-    Object.keys(formData).forEach((key) => {
-      bookData.append(key, formData[key]);
-    });
-    if (imageFile) {
-      bookData.append("image", imageFile);
-    }
-
-    try {
-      await addBook(bookData).unwrap();
-      toast.success("Book added successfully");
+    if (isSuccess) {
       clearForm();
-    } catch (error) {
-      toast.error(error?.data?.message || "Something went wrong");
     }
   }
 

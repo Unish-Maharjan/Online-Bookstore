@@ -3,11 +3,55 @@ import { useNavigate } from "react-router-dom";
 
 const API_BASE = "https://bookstore-backend-1-nc4r.onrender.com";
 
-function parseJwt(token) {
-  try {
-    return JSON.parse(atob(token.split(".")[1]));
-  } catch {
-    return null;
+class AuthService {
+  static parseJwt(token) {
+    try {
+      return JSON.parse(atob(token.split(".")[1]));
+    } catch {
+      return null;
+    }
+  }
+
+  static getAuthBody({ isRegister, name, email, password, role }) {
+    return isRegister
+      ? { name, email, password, role }
+      : { email, password, role };
+  }
+
+  static saveUserSession(token, payload, fallbackName, email) {
+    localStorage.setItem("token", token);
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        id: payload.id,
+        role: payload.role,
+        name: payload.name || fallbackName,
+        email,
+      })
+    );
+  }
+}
+
+class AuthRequestService {
+  static async submit({ isRegister, name, email, password, role }) {
+    const endpoint = isRegister ? "/auth/register" : "/auth/login";
+    const body = AuthService.getAuthBody({ isRegister, name, email, password, role });
+
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Oops! Something went sideways.");
+    }
+
+    return data;
   }
 }
 
@@ -32,35 +76,25 @@ function LoginForm() {
     setError("");
 
     try {
-      const endpoint = isRegister ? "/auth/register" : "/auth/login";
-      const body = isRegister
-        ? { name, email, password, role }
-        : { email, password, role };
-
-      const res = await fetch(`${API_BASE}${endpoint}`, {
-        method: "POST",
-        headers: {
-
-           "Content-Type": "application/json" 
-           
-          },
-        body: JSON.stringify(body),
+      const data = await AuthRequestService.submit({
+        isRegister,
+        name,
+        email,
+        password,
+        role,
       });
 
-      const data = await res.json();
-      if (!res.ok) { setError(data.message || "Oops! Something went sideways."); setLoading(false); return; }
+      const payload = AuthService.parseJwt(data.token);
+      if (!payload) {
+        throw new Error("Invalid token received.");
+      }
 
-      const payload = parseJwt(data.token);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify({
-        id: payload.id, role: payload.role,
-        name: payload.name || name, email,
-      }));
+      AuthService.saveUserSession(data.token, payload, name, email);
 
       if (payload.role === "admin") navigate("/admin-dashboard");
       else navigate("/books");
-    } catch {
-      setError("Couldn't reach the server. Try later?");
+    } catch (err) {
+      setError(err.message || "Couldn't reach the server. Try later?");
     } finally {
       setLoading(false);
     }

@@ -1,17 +1,63 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 
-
 const SERVER_URL = "https://bookstore-backend-1-nc4r.onrender.com";
 
+class BookRepository {
+  static getSavedToken() {
+    return localStorage.getItem("token");
+  }
 
-function getSavedToken() {
-  return localStorage.getItem("token");
+  static async loadBooks() {
+    const response = await fetch(`${SERVER_URL}/books`);
+    if (!response.ok) {
+      throw new Error("Could not load books from the server.");
+    }
+    return response.json();
+  }
+
+  static async updateBook(bookId, formData) {
+    const token = this.getSavedToken();
+    const response = await fetch(`${SERVER_URL}/books/${bookId}`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const result = await response.json();
+      throw new Error(result.message || "Could not update the book.");
+    }
+
+    return response.json();
+  }
+
+  static async deleteBook(bookId) {
+    const token = this.getSavedToken();
+    const response = await fetch(`${SERVER_URL}/books/${bookId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) {
+      const result = await response.json();
+      throw new Error(result.message || "Could not delete the book.");
+    }
+  }
+}
+
+class BookFilter {
+  static search(books, searchText) {
+    const query = searchText.toLowerCase();
+    return books.filter((book) => {
+      const titleMatch = book.title?.toLowerCase().includes(query);
+      const authorMatch = book.author?.toLowerCase().includes(query);
+      return titleMatch || authorMatch;
+    });
+  }
 }
 
 function EditPopup({ book, onClose, onSaved }) {
-
-  // one variable for each field in the form
   const [title, setTitle] = useState(book.title || "");
   const [author, setAuthor] = useState(book.author || "");
   const [category, setCategory] = useState(book.category || "");
@@ -25,14 +71,11 @@ function EditPopup({ book, onClose, onSaved }) {
   const [errorMessage, setErrorMessage] = useState("");
 
   async function saveChanges(e) {
-    e.preventDefault(); 
+    e.preventDefault();
     setIsSaving(true);
     setErrorMessage("");
 
     try {
-      const token = getSavedToken();
-
-   
       const formData = new FormData();
       formData.append("title", title);
       formData.append("author", author);
@@ -43,21 +86,9 @@ function EditPopup({ book, onClose, onSaved }) {
       formData.append("description", description);
       if (newImage) formData.append("image", newImage);
 
-     
-      const response = await fetch(`${SERVER_URL}/books/${book._id}`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.message || "Could not update the book.");
-      }
-
-      const updatedBook = await response.json();
-      onSaved(updatedBook); 
-      onClose();            
+      const updatedBook = await BookRepository.updateBook(book._id, formData);
+      onSaved(updatedBook);
+      onClose();
     } catch (err) {
       setErrorMessage(err.message);
     } finally {
@@ -214,18 +245,7 @@ function DeletePopup({ book, onClose, onDeleted }) {
     setErrorMessage("");
 
     try {
-      const token = getSavedToken();
-
-      const response = await fetch(`${SERVER_URL}/books/${book._id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.message || "Could not delete the book.");
-      }
-
+      await BookRepository.deleteBook(book._id);
       onDeleted(book._id);
       onClose();
     } catch (err) {
@@ -287,9 +307,7 @@ export default function ManageBooks() {
   useEffect(function () {
     async function loadBooks() {
       try {
-        const response = await fetch(`${SERVER_URL}/books`);
-        if (!response.ok) throw new Error("Could not load books from the server.");
-        const data = await response.json();
+        const data = await BookRepository.loadBooks();
         setBookList(data);
       } catch (err) {
         setLoadError(err.message);
@@ -299,13 +317,13 @@ export default function ManageBooks() {
     }
 
     loadBooks();
-  }, []); 
+  }, []);
 
   function updateBookInList(updatedBook) {
     setBookList(function (currentList) {
       return currentList.map(function (book) {
         if (book._id === updatedBook._id) return updatedBook;
-        return book; 
+        return book;
       });
     });
   }
@@ -313,17 +331,12 @@ export default function ManageBooks() {
   function removeBookFromList(deletedId) {
     setBookList(function (currentList) {
       return currentList.filter(function (book) {
-        return book._id !== deletedId; // keep all books except the deleted one
+        return book._id !== deletedId;
       });
     });
   }
 
-  const visibleBooks = bookList.filter(function (book) {
-    const query = searchText.toLowerCase();
-    const titleMatch = book.title?.toLowerCase().includes(query);
-    const authorMatch = book.author?.toLowerCase().includes(query);
-    return titleMatch || authorMatch;
-  });
+  const visibleBooks = BookFilter.search(bookList, searchText);
 
   return (
     <div className="min-h-screen bg-slate-50 font-[Poppins] p-4 sm:p-8">

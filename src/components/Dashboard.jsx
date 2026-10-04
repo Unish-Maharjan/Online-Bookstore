@@ -1,16 +1,34 @@
 import { useNavigate } from "react-router-dom";
 
-function Dashboard() {
-  const navigate = useNavigate();
+class DashboardSession {
+  static getUser() {
+    try {
+      return JSON.parse(localStorage.getItem("user") || "{}");
+    } catch {
+      return {};
+    }
+  }
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const token = localStorage.getItem("token");
-  const { role, name, email } = user;
+  static getToken() {
+    return localStorage.getItem("token");
+  }
 
-  const handleLogout = () => {
+  static logout(navigate) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/user");
+  }
+}
+
+function Dashboard() {
+  const navigate = useNavigate();
+
+  const user = DashboardSession.getUser();
+  const token = DashboardSession.getToken();
+  const { role, name, email } = user;
+
+  const handleLogout = () => {
+    DashboardSession.logout(navigate);
   };
 
   return (

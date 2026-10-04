@@ -1,44 +1,42 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_BASE_URL } from "./api";
 
 export const bookApi = createApi({
-  reducerPath: 'bookApi',
+  reducerPath: "bookApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://bookstore-backend-1-nc4r.onrender.com/',
+    baseUrl: `${API_BASE_URL}/`,
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
+        headers.set("Authorization", `Bearer ${token}`);
       }
       return headers;
     },
   }),
-  tagTypes: ['Books'],
+  tagTypes: ["Books"],
   endpoints: (builder) => ({
     getBooks: builder.query({
-      query: () => 'books',
-      providesTags: ['Books'],
+      query: () => "books",
+      providesTags: ["Books"],
     }),
-
     addBook: builder.mutation({
       query: (newBook) => ({
-        url: 'books',
-        method: 'POST',
+        url: "books",
+        method: "POST",
         body: newBook,
       }),
-      invalidatesTags: ['Books'],
+      invalidatesTags: ["Books"],
     }),
-
     deleteBook: builder.mutation({
       query: (id) => ({
         url: `books/${id}`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
-      invalidatesTags: ['Books'],
+      invalidatesTags: ["Books"],
     }),
-
     getSingleBook: builder.query({
-    query: (id) => `books/${id}`,
-    providesTags: ['Books'],
+      query: (id) => `books/${id}`,
+      providesTags: ["Books"],
     }),
   }),
 });

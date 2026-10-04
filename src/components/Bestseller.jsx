@@ -1,4 +1,3 @@
-import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Link, useNavigate } from 'react-router';
 import { useCart } from '../components/CartContext'
@@ -8,21 +7,45 @@ import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import { useGetBooksQuery } from '../services/bookApi';
 
+class BookCatalog {
+  constructor(books = []) {
+    this.books = Array.isArray(books) ? books : [];
+  }
+
+  getBestsellers(minRating = 4.8) {
+    return this.books.filter((book) => book.rating >= minRating);
+  }
+}
+
+class BestsellerService {
+  constructor({ addToCart, notify }) {
+    this.addToCart = addToCart;
+    this.notify = notify;
+  }
+
+  async addBookToCart(item) {
+    await this.addToCart(item);
+    this.notify.success(`${item.title} added to cart!`, {
+      duration: 3000,
+      style: { padding: '14px', color: '#12923d', background: '#ecfdf3' },
+      iconTheme: { primary: '#12923d' },
+    });
+  }
+}
+
 const Bestseller = () => {
   const { addToCart } = useCart();
   const navigate = useNavigate();
   const { data } = useGetBooksQuery();
 
+  const catalog = new BookCatalog(data ?? []);
+  const bestsellerService = new BestsellerService({ addToCart, notify: toast });
+
   const handleAddToCart = async (item) => {
-    await addToCart(item);
-    toast.success(`${item.title} added to cart!`, {
-      duration: 3000,
-      style: { padding: '14px', color: '#12923d', background: '#ecfdf3' },
-      iconTheme: { primary: '#12923d' },
-    });
+    await bestsellerService.addBookToCart(item);
   };
 
-  const bestsellers = data?.filter((book) => book.rating >= 4.8);
+  const bestsellers = catalog.getBestsellers();
 
   return (
     <div className='bg-white py-10'>
