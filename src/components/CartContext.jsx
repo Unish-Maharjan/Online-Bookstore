@@ -112,8 +112,24 @@ export function CartProvider({ children }) {
     }
   };
 
+  // Sync CLEAR_CART with the backend
+  const clearCart = async () => {
+    const userId = getUserId();
+    dispatch({ type: "CLEAR_CART" });
+
+    if (!userId) return;
+
+    try {
+      await fetch(`${API_BASE_URL}/cart/${userId}`, {
+        method: "DELETE",
+      });
+    } catch (err) {
+      console.error("Cart API error:", err.message);
+    }
+  };
+
   return (
-    <CartContext.Provider value={{ state, dispatch, addToCart, increment, decrement, removeFromCart }}>
+    <CartContext.Provider value={{ state, dispatch, addToCart, increment, decrement, removeFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );

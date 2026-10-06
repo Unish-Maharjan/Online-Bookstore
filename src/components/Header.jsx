@@ -24,16 +24,21 @@ class HeaderModel {
   }
 
   static getUserLabel(user, admin) {
-    if (admin) return 'Dashboard'
-    if (user) return 'My Account'
+    if (admin || user?.role === 'admin') return 'Admin Portal'
+    if (user?.name) return `Hi, ${user.name.split(' ')[0]}`
+    if (user) return 'Dashboard'
     return 'Sign In'
   }
 
-  static getNavigationLinks() {
-    return [
+  static getNavigationLinks(user) {
+    const links = [
       { to: '/home', label: 'Home', icon: 'fa-house' },
       { to: '/books', label: 'Books', icon: 'fa-book' },
     ]
+    if (user && user.role !== 'admin') {
+      links.push({ to: '/dashboard', label: 'Dashboard', icon: 'fa-gauge' })
+    }
+    return links
   }
 }
 
@@ -51,11 +56,17 @@ const Header = () => {
 
   const handleUserClick = () => {
     setMenuOpen(false)
-    navigate(admin ? '/admin-dashboard' : '/user')
+    if (admin || user?.role === 'admin') {
+      navigate('/admin-dashboard')
+    } else if (user) {
+      navigate('/dashboard')
+    } else {
+      navigate('/user')
+    }
   }
 
   const userLabel = HeaderModel.getUserLabel(user, admin)
-  const navLinks = HeaderModel.getNavigationLinks()
+  const navLinks = HeaderModel.getNavigationLinks(user)
 
   return (
     <>

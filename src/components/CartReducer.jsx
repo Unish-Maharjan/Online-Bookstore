@@ -99,6 +99,13 @@ export class CartStore {
       case "REMOVE_FROM_CART":
         return this.removeItem(action.payload);
 
+      case "CLEAR_CART":
+        this.state = {
+          ...this.state,
+          cartItems: [],
+        };
+        return this.state;
+
       default:
         return this.state;
     }
