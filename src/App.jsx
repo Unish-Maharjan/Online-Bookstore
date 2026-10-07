@@ -44,6 +44,10 @@ function App() {
       element: <><Header/><EsewaSuccess/><Footer/></>
     },
     {
+      path: '/esewa-success',
+      element: <><Header/><EsewaSuccess/><Footer/></>
+    },
+    {
       path: '/orders',
       element: <><Header/><Orders/><Footer/></>
     },

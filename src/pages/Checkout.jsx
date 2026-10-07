@@ -45,11 +45,17 @@ export default function Checkout() {
   const grandTotal = subtotal + shippingFee;
 
   useEffect(() => {
+    const dataParam = searchParams.get("data");
+    if (dataParam) {
+      navigate(`/payment/esewa/success?${searchParams.toString()}`, { replace: true });
+      return;
+    }
+
     const statusParam = searchParams.get("status");
     if (statusParam === "esewa_cancelled") {
       setError("Your eSewa transaction was cancelled. No charges were made. You may retry whenever ready.");
     }
-  }, [searchParams]);
+  }, [searchParams, navigate]);
 
   const copyCred = (text, fieldName) => {
     navigator.clipboard.writeText(text);
