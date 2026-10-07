@@ -15,6 +15,7 @@ import Addbooks from './components/Addbooks.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import Checkout from './pages/Checkout.jsx';
 import Orders from './pages/Orders.jsx';
+import EsewaSuccess from './pages/EsewaSuccess.jsx';
 
 function App() {
   const router = createBrowserRouter([
@@ -37,6 +38,10 @@ function App() {
     {
       path: '/checkout',
       element: <><Header/><Checkout/><Footer/></>
+    },
+    {
+      path: '/payment/esewa/success',
+      element: <><Header/><EsewaSuccess/><Footer/></>
     },
     {
       path: '/orders',

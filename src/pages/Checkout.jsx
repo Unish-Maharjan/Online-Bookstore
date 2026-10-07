@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useCart } from "../components/CartContext";
 import { apiRequest, getAuthToken } from "../services/api";
+import { redirectToEsewaGateway, ESEWA_CONFIG } from "../services/esewa";
 import {
   CreditCard,
   ShieldCheck,
@@ -17,18 +18,24 @@ import {
   AlertCircle,
   Wallet,
   Receipt,
+  ExternalLink,
+  Key,
+  Lock,
+  Smartphone,
 } from "lucide-react";
 
 export default function Checkout() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { state, clearCart } = useCart();
   const { cartItems } = state;
 
-  const [paymentMethod, setPaymentMethod] = useState("TEST"); // "TEST" | "ESEWA" | "COD"
+  const [paymentMethod, setPaymentMethod] = useState("ESEWA"); // Default to ESEWA for dummy testing!
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [payment, setPayment] = useState(null);
   const [processingStep, setProcessingStep] = useState("");
+  const [copiedField, setCopiedField] = useState("");
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1),
@@ -36,6 +43,20 @@ export default function Checkout() {
   );
   const shippingFee = subtotal >= 1000 || subtotal === 0 ? 0 : 100;
   const grandTotal = subtotal + shippingFee;
+
+  useEffect(() => {
+    const statusParam = searchParams.get("status");
+    if (statusParam === "esewa_cancelled") {
+      setError("Your eSewa transaction was cancelled. No charges were made. You may retry whenever ready.");
+    }
+  }, [searchParams]);
+
+  const copyCred = (text, fieldName) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(fieldName);
+    toast.success(`${fieldName} copied to clipboard!`, { duration: 1500 });
+    setTimeout(() => setCopiedField(""), 2000);
+  };
 
   const startPayment = async () => {
     if (!getAuthToken()) {
@@ -100,8 +121,37 @@ export default function Checkout() {
         return;
       }
 
-      // Step 2: Initiate Payment
-      setProcessingStep("Initiating secure payment gateway...");
+      // If eSewa was selected: Redirect to official eSewa UAT Portal
+      if (paymentMethod === "ESEWA") {
+        setProcessingStep("Connecting to eSewa payment gateway...");
+
+        // Notify backend of payment initiation
+        let initiatedTxnId = null;
+        try {
+          const initRes = await apiRequest("/api/payments/initiate", {
+            method: "POST",
+            body: JSON.stringify({ orderId: order._id, paymentMethod: "TEST" }),
+          });
+          initiatedTxnId = initRes?.data?.transactionId;
+        } catch (initErr) {
+          console.warn("Initiate payment note:", initErr.message);
+        }
+
+        setProcessingStep("Redirecting to eSewa UAT portal...");
+        toast.loading("Opening eSewa secure payment gateway...", { duration: 3000 });
+
+        await redirectToEsewaGateway({
+          orderId: order._id,
+          transactionId: initiatedTxnId,
+          totalAmount: order.totalAmount || grandTotal,
+          successUrl: `${window.location.origin}/payment/esewa/success`,
+          failureUrl: `${window.location.origin}/checkout?status=esewa_cancelled`,
+        });
+        return;
+      }
+
+      // Step 2: Instant Test Mode
+      setProcessingStep("Initiating secure sandbox gateway...");
       let initiated = null;
       try {
         initiated = await apiRequest("/api/payments/initiate", {
@@ -109,7 +159,6 @@ export default function Checkout() {
           body: JSON.stringify({ orderId: order._id, paymentMethod: "TEST" }),
         });
       } catch (initErr) {
-        // If payment already exists or 409, continue
         console.warn("Initiate payment info:", initErr.message);
       }
 
@@ -353,7 +402,151 @@ export default function Checkout() {
               Select Payment Method
             </h2>
             <div className="space-y-3">
-              {/* Option 1: Instant Card / Sandbox */}
+              {/* Option 1: eSewa Digital Wallet */}
+              <label
+                onClick={() => setPaymentMethod("ESEWA")}
+                className={`p-4 rounded-2xl border flex items-center justify-between cursor-pointer transition-all ${
+                  paymentMethod === "ESEWA"
+                    ? "border-[#60bb46] bg-emerald-50/40 ring-2 ring-[#60bb46]/20"
+                    : "border-slate-200 hover:bg-slate-50"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${
+                      paymentMethod === "ESEWA"
+                        ? "bg-[#60bb46] text-white shadow-sm shadow-emerald-200"
+                        : "bg-emerald-100 text-[#4fa037]"
+                    }`}
+                  >
+                    <Wallet size={20} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold text-sm text-slate-900">
+                        eSewa Mobile Wallet
+                      </p>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-[#4fa037]">
+                        UAT Sandbox
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-400">
+                      Pay securely with eSewa Nepal dummy account
+                    </p>
+                  </div>
+                </div>
+                <input
+                  type="radio"
+                  name="payment"
+                  checked={paymentMethod === "ESEWA"}
+                  onChange={() => setPaymentMethod("ESEWA")}
+                  className="w-4 h-4 text-[#60bb46] accent-[#60bb46]"
+                />
+              </label>
+
+              {/* eSewa Dummy Account Credentials Helper Card */}
+              {paymentMethod === "ESEWA" && (
+                <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-50/90 to-green-50/50 border border-emerald-200/90 space-y-3 text-xs animate-fadeIn">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-emerald-900 font-bold">
+                      <Sparkles size={15} className="text-[#60bb46]" />
+                      <span>Official eSewa Sandbox Credentials</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full bg-[#60bb46] text-white text-[10px] font-extrabold uppercase tracking-wide">
+                      Dummy Account
+                    </span>
+                  </div>
+
+                  <p className="text-emerald-800 text-[11px] leading-relaxed">
+                    Use these dummy credentials on eSewa's gateway login & confirmation screens:
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-2 text-[11px]">
+                    {/* eSewa ID */}
+                    <div className="p-2.5 rounded-xl bg-white border border-emerald-100 flex items-center justify-between shadow-2xs">
+                      <div>
+                        <span className="text-[10px] text-slate-400 block font-medium">eSewa ID (Mobile)</span>
+                        <span className="font-mono font-bold text-slate-800">9806800001</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyCred("9806800001", "eSewa ID");
+                        }}
+                        className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-emerald-700 transition-colors"
+                        title="Copy eSewa ID"
+                      >
+                        <Copy size={13} />
+                      </button>
+                    </div>
+
+                    {/* Password */}
+                    <div className="p-2.5 rounded-xl bg-white border border-emerald-100 flex items-center justify-between shadow-2xs">
+                      <div>
+                        <span className="text-[10px] text-slate-400 block font-medium">Password</span>
+                        <span className="font-mono font-bold text-slate-800">Nepal@123</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyCred("Nepal@123", "Password");
+                        }}
+                        className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-emerald-700 transition-colors"
+                        title="Copy Password"
+                      >
+                        <Copy size={13} />
+                      </button>
+                    </div>
+
+                    {/* OTP */}
+                    <div className="p-2.5 rounded-xl bg-white border border-emerald-100 flex items-center justify-between shadow-2xs">
+                      <div>
+                        <span className="text-[10px] text-slate-400 block font-medium">Token / OTP</span>
+                        <span className="font-mono font-bold text-slate-800">123456</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyCred("123456", "OTP");
+                        }}
+                        className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-emerald-700 transition-colors"
+                        title="Copy OTP"
+                      >
+                        <Copy size={13} />
+                      </button>
+                    </div>
+
+                    {/* MPIN */}
+                    <div className="p-2.5 rounded-xl bg-white border border-emerald-100 flex items-center justify-between shadow-2xs">
+                      <div>
+                        <span className="text-[10px] text-slate-400 block font-medium">MPIN</span>
+                        <span className="font-mono font-bold text-slate-800">1122</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyCred("1122", "MPIN");
+                        }}
+                        className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-emerald-700 transition-colors"
+                        title="Copy MPIN"
+                      >
+                        <Copy size={13} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 text-[10px] text-emerald-700 pt-0.5">
+                    <ShieldCheck size={13} className="shrink-0 text-[#60bb46]" />
+                    <span>Safe test transaction · Redirects directly to eSewa's portal</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Option 2: Instant Card / Sandbox */}
               <label
                 onClick={() => setPaymentMethod("TEST")}
                 className={`p-4 rounded-2xl border flex items-center justify-between cursor-pointer transition-all ${
@@ -374,10 +567,10 @@ export default function Checkout() {
                   </div>
                   <div>
                     <p className="font-bold text-sm text-slate-900">
-                      Instant Card / Digital Gateway
+                      Instant Card Simulator (Test Mode)
                     </p>
                     <p className="text-xs text-slate-400">
-                      Seamless digital verification & instant order confirmation
+                      One-click instant payment simulation
                     </p>
                   </div>
                 </div>
@@ -386,41 +579,6 @@ export default function Checkout() {
                   name="payment"
                   checked={paymentMethod === "TEST"}
                   onChange={() => setPaymentMethod("TEST")}
-                  className="w-4 h-4 text-[#5951e6] accent-[#5951e6]"
-                />
-              </label>
-
-              {/* Option 2: Digital Wallets (Khalti / eSewa) */}
-              <label
-                onClick={() => setPaymentMethod("ESEWA")}
-                className={`p-4 rounded-2xl border flex items-center justify-between cursor-pointer transition-all ${
-                  paymentMethod === "ESEWA"
-                    ? "border-[#5951e6] bg-indigo-50/50 ring-2 ring-[#5951e6]/20"
-                    : "border-slate-200 hover:bg-slate-50"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      paymentMethod === "ESEWA"
-                        ? "bg-purple-600 text-white"
-                        : "bg-slate-100 text-slate-600"
-                    }`}
-                  >
-                    <Wallet size={20} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm text-slate-900">eSewa / Khalti Digital Wallet</p>
-                    <p className="text-xs text-slate-400">
-                      Pay instantly with local Nepal mobile wallet
-                    </p>
-                  </div>
-                </div>
-                <input
-                  type="radio"
-                  name="payment"
-                  checked={paymentMethod === "ESEWA"}
-                  onChange={() => setPaymentMethod("ESEWA")}
                   className="w-4 h-4 text-[#5951e6] accent-[#5951e6]"
                 />
               </label>
@@ -465,11 +623,10 @@ export default function Checkout() {
             <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm flex items-start gap-2.5 animate-fadeIn">
               <AlertCircle size={18} className="shrink-0 mt-0.5 text-rose-500" />
               <div>
-                <p className="font-bold">Payment Issue Encountered</p>
+                <p className="font-bold">Payment Notice</p>
                 <p className="mt-0.5">{error}</p>
                 <p className="mt-1 text-slate-500 text-[11px]">
-                  Tip: You can select <strong>Cash on Delivery (COD)</strong> to place your order
-                  instantly.
+                  Tip: You can select <strong>eSewa Mobile Wallet</strong> or <strong>Cash on Delivery (COD)</strong> to place your order.
                 </p>
               </div>
             </div>
@@ -526,18 +683,24 @@ export default function Checkout() {
           <button
             onClick={startPayment}
             disabled={loading}
-            className="w-full py-4 rounded-2xl bg-[#5951e6] hover:bg-[#473dbd] active:scale-[0.99] text-white font-bold text-sm sm:text-base transition-all shadow-[0_8px_20px_rgba(89,81,230,0.3)] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className={`w-full py-4 rounded-2xl active:scale-[0.99] text-white font-bold text-sm sm:text-base transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
+              paymentMethod === "ESEWA"
+                ? "bg-[#60bb46] hover:bg-[#52a63a] shadow-[0_8px_20px_rgba(96,187,70,0.35)]"
+                : "bg-[#5951e6] hover:bg-[#473dbd] shadow-[0_8px_20px_rgba(89,81,230,0.3)]"
+            }`}
           >
             {loading ? (
               <>
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Processing Payment...</span>
+                <span>{processingStep || "Processing..."}</span>
               </>
             ) : (
               <>
                 <span>
                   {paymentMethod === "COD"
                     ? "Place Order (Pay on Delivery)"
+                    : paymentMethod === "ESEWA"
+                    ? `Pay NPR ${grandTotal.toFixed(2)} with eSewa`
                     : `Proceed to Pay NPR ${grandTotal.toFixed(2)}`}
                 </span>
                 <ArrowRight size={17} />
