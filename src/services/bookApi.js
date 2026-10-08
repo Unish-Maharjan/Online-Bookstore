@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { API_BASE_URL } from "./api";
+import { API_BASE_URL, getAuthToken } from "./api";
 
 export const bookApi = createApi({
   reducerPath: "bookApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${API_BASE_URL}/`,
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
+      const token = getAuthToken();
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }

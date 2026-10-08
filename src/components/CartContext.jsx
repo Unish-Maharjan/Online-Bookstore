@@ -1,5 +1,7 @@
 import { createContext, useContext, useReducer } from "react";
 import { CartReducer, initialState } from "./CartReducer";
+import { getAuthToken } from "../services/api";
+import toast from "react-hot-toast";
 
 const CartContext = createContext();
 
@@ -15,7 +17,7 @@ function parseJwt(token) {
 }
 
 export function getUserId() {
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
   if (!token) return null;
   const payload = parseJwt(token);
   return payload?.id || null;
@@ -29,8 +31,8 @@ export function CartProvider({ children }) {
     const userId = getUserId();
 
     if (!userId) {
-      console.error("User not logged in");
-      return;
+      toast.error("Please sign in to add to cart");
+      return false;
     }
 
     // Update UI immediately (optimistic update)
@@ -52,9 +54,12 @@ export function CartProvider({ children }) {
       if (!response.ok) {
         const error = await response.json();
         console.error("Failed to add to cart:", error.message);
+        return false;
       }
+      return true;
     } catch (err) {
       console.error("Cart API error:", err.message);
+      return false;
     }
   };
 

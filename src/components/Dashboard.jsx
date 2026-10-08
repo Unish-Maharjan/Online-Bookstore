@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useCart } from "./CartContext";
 import { useGetBooksQuery } from "../services/bookApi";
-import { apiRequest } from "../services/api";
+import { apiRequest, getAuthToken, removeAuthToken } from "../services/api";
 import {
   BookOpen,
   ShoppingBag,
@@ -35,13 +35,13 @@ class DashboardSession {
   }
 
   static getToken() {
-    return localStorage.getItem("token");
+    return getAuthToken();
   }
 
   static logout(navigate) {
-    localStorage.removeItem("token");
+    removeAuthToken();
     localStorage.removeItem("user");
-    toast.success("Successfully logged out.", { duration: 2500 });
+    toast.success("Successfully logged out.", { duration: 2000 });
     navigate("/user");
   }
 }
@@ -206,8 +206,10 @@ export default function Dashboard() {
   // Add to cart
   const handleAddToCart = async (book) => {
     try {
-      await addToCart(book);
-      toast.success(`"${book.title}" added to cart`);
+      const success = await addToCart(book);
+      if (success !== false) {
+        toast.success(`"${book.title}" added to cart`);
+      }
     } catch {
       toast.error("Could not add book to cart");
     }

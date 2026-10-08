@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-import { API_BASE_URL } from "../services/api";
+import { API_BASE_URL, getAuthToken, setAuthToken } from "../services/api";
 import {
   Mail,
   Lock,
@@ -24,21 +24,24 @@ function parseJwt(token) {
 
 export default function User() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // If already logged in, redirect immediately
   useEffect(() => {
-    const existingToken = localStorage.getItem("token");
+    const existingToken = getAuthToken();
     if (existingToken) {
       const payload = parseJwt(existingToken);
       if (payload) {
         if (payload.role === "admin") {
           navigate("/admin-dashboard");
+        } else if (location.state?.from) {
+          navigate(location.state.from);
         } else {
           navigate("/dashboard");
         }
       }
     }
-  }, [navigate]);
+  }, [navigate, location.state]);
 
   const [tab, setTab] = useState("login"); // "login" | "register"
   const [name, setName] = useState("");
@@ -110,8 +113,8 @@ export default function User() {
         return;
       }
 
-      // Store auth session
-      localStorage.setItem("token", data.token);
+      // Store auth session in cookies
+      setAuthToken(data.token);
       localStorage.setItem(
         "user",
         JSON.stringify({
@@ -128,6 +131,8 @@ export default function User() {
 
       if (payload.role === "admin") {
         navigate("/admin-dashboard");
+      } else if (location.state?.from) {
+        navigate(location.state.from);
       } else {
         navigate("/dashboard");
       }
@@ -193,6 +198,14 @@ export default function User() {
             Register
           </button>
         </div>
+
+        {/* Redirect Notice */}
+        {location.state?.from && !error && (
+          <div className="mb-5 p-3 rounded-xl bg-indigo-50 border border-indigo-200 text-[#5951e6] text-xs sm:text-sm flex items-center gap-2">
+            <BookOpen size={16} className="shrink-0 text-[#5951e6]" />
+            <span className="leading-snug font-medium">Please sign in to add items to your cart.</span>
+          </div>
+        )}
 
         {/* Error Alert */}
         {error && (

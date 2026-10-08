@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAddBookMutation } from '../services/bookApi';
+import { getAuthToken, removeAuthToken } from "../services/api";
 
 class BookFormModel {
   static createInitialState() {
@@ -48,7 +49,7 @@ class BookFormService {
       return false;
     }
 
-    const token = localStorage.getItem("token");
+    const token = getAuthToken();
     if (!token) {
       this.notify.error("Please login first");
       this.navigate("/user");
@@ -114,6 +115,7 @@ const Addbooks = () => {
   }
 
   function handleLogout() {
+    removeAuthToken();
     localStorage.clear();
     toast.success("Logged out successfully");
     navigate("/user");

@@ -1,9 +1,16 @@
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || "https://bookstore-backend-1-nc4r.onrender.com";
 
-export function getAuthToken() {
-  return localStorage.getItem("token");
-}
+export {
+  getAuthToken,
+  setAuthToken,
+  removeAuthToken,
+  setCookie,
+  getCookie,
+  removeCookie,
+} from "../utils/cookie";
+
+import { getAuthToken } from "../utils/cookie";
 
 export async function apiRequest(path, options = {}) {
   const token = getAuthToken();

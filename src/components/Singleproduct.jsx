@@ -1,8 +1,9 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from '../components/CartContext'
 import toast from 'react-hot-toast'
 import { Star, ShoppingCart, Package } from "lucide-react";
 import { useGetSingleBookQuery } from '../services/bookApi'; 
+import { getAuthToken } from '../services/api';
 
 class BookProductModel {
   static getRatingStars(rating = 0) {
@@ -11,37 +12,62 @@ class BookProductModel {
 }
 
 class ProductService {
-  constructor({ addToCart, notify }) {
+  constructor({ addToCart, notify, navigate }) {
     this.addToCart = addToCart;
     this.notify = notify;
+    this.navigate = navigate;
   }
 
-  async addToCartWithToast(item) {
-    await this.addToCart(item);
-    this.notify.success(`${item.title} added to cart!`, {
-      duration: 3500,
-      style: {
-        padding: '14px',
-        color: '#12923d',
-        background: '#ecfdf3',
-      },
-      iconTheme: {
-        primary: '#12923d',
-      },
-    });
+  async addToCartWithToast(item, currentPath = window.location.pathname) {
+    if (!getAuthToken()) {
+      this.notify.error("Please sign in to add to cart");
+      if (this.navigate) {
+        this.navigate("/user", { state: { from: currentPath } });
+      }
+      return false;
+    }
+
+    const success = await this.addToCart(item);
+    if (success !== false) {
+      this.notify.success(`${item.title} added to cart!`, {
+        duration: 2000,
+        style: {
+          padding: '14px',
+          color: '#12923d',
+          background: '#ecfdf3',
+        },
+        iconTheme: {
+          primary: '#12923d',
+        },
+      });
+      return true;
+    }
+    return false;
   }
 }
 
 const Singleproduct = () => {
   const { addToCart } = useCart();
   const params = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { data: singleData, isLoading, isError } = useGetSingleBookQuery(params.id);
-  const productService = new ProductService({ addToCart, notify: toast });
+  const productService = new ProductService({ addToCart, notify: toast, navigate });
   const ratingStars = BookProductModel.getRatingStars(singleData?.rating || 0);
 
   const handleAddToCart = async (item) => {
-    await productService.addToCartWithToast(item);
+    await productService.addToCartWithToast(item, location.pathname);
+  };
+
+  const handleBuyNow = async (item) => {
+    if (!getAuthToken()) {
+      toast.error("Please sign in to add to cart");
+      navigate("/user", { state: { from: location.pathname } });
+      return;
+    }
+    await addToCart(item);
+    navigate("/checkout");
   };
 
   if (isLoading) return (
@@ -129,8 +155,11 @@ const Singleproduct = () => {
                 Add to Cart
               </button>
 
-              <button className="bg-orange-400 hover:bg-orange-500 transition-all duration-300 text-white
-                rounded-2xl px-10 h-12 text-xl font-semibold shadow-lg">
+              <button
+                className="bg-orange-400 hover:bg-orange-500 transition-all duration-300 text-white
+                rounded-2xl px-10 h-12 text-xl font-semibold shadow-lg"
+                onClick={() => handleBuyNow(singleData)}
+              >
                 Buy Now
               </button>
             </div>

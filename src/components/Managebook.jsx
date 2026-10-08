@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
+import { getAuthToken } from "../services/api";
 
 const SERVER_URL = "https://bookstore-backend-1-nc4r.onrender.com";
 
 class BookRepository {
   static getSavedToken() {
-    return localStorage.getItem("token");
+    return getAuthToken();
   }
 
   static async loadBooks() {

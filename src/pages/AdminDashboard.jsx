@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useGetBooksQuery } from "../services/bookApi";
 import { Link, useNavigate } from "react-router";
 import toast from "react-hot-toast";
-import { apiRequest } from "../services/api";
+import { apiRequest, removeAuthToken } from "../services/api";
 import {
   ShoppingBag,
   CreditCard,
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
   const [transactionsFilter, setTransactionsFilter] = useState("all"); // "all" | "completed" | "pending" | "failed"
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    removeAuthToken();
     localStorage.removeItem("user");
     toast.success("Admin logged out successfully.");
     navigate("/user");

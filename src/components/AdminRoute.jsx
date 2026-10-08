@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { getAuthToken } from "../services/api";
 
 class AuthGuard {
   static parseJwt(token) {
@@ -12,7 +13,7 @@ class AuthGuard {
   }
 
   static getCurrentUser() {
-    const token = localStorage.getItem("token");
+    const token = getAuthToken();
     return this.parseJwt(token);
   }
 
@@ -23,7 +24,7 @@ class AuthGuard {
 }
 
 export default function AdminRoute({ children }) {
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
 
   if (!token) {
     return <Navigate to="/user" />;

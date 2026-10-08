@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { setAuthToken } from "../services/api";
 
 const API_BASE = "https://bookstore-backend-1-nc4r.onrender.com";
 
@@ -19,7 +20,7 @@ class AuthService {
   }
 
   static saveUserSession(token, payload, fallbackName, email) {
-    localStorage.setItem("token", token);
+    setAuthToken(token);
     localStorage.setItem(
       "user",
       JSON.stringify({

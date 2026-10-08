@@ -6,6 +6,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import { useGetBooksQuery } from '../services/bookApi';
+import { getAuthToken } from '../services/api';
 
 class BookCatalog {
   constructor(books = []) {
@@ -18,18 +19,30 @@ class BookCatalog {
 }
 
 class BestsellerService {
-  constructor({ addToCart, notify }) {
+  constructor({ addToCart, notify, navigate }) {
     this.addToCart = addToCart;
     this.notify = notify;
+    this.navigate = navigate;
   }
 
-  async addBookToCart(item) {
-    await this.addToCart(item);
-    this.notify.success(`${item.title} added to cart!`, {
-      duration: 3000,
-      style: { padding: '14px', color: '#12923d', background: '#ecfdf3' },
-      iconTheme: { primary: '#12923d' },
-    });
+  async addBookToCart(item, fromPath = window.location.pathname) {
+    if (!getAuthToken()) {
+      this.notify.error("Please sign in to add to cart");
+      if (this.navigate) {
+        this.navigate("/user", { state: { from: fromPath } });
+      }
+      return false;
+    }
+    const success = await this.addToCart(item);
+    if (success !== false) {
+      this.notify.success(`${item.title} added to cart!`, {
+        duration: 2000,
+        style: { padding: '14px', color: '#12923d', background: '#ecfdf3' },
+        iconTheme: { primary: '#12923d' },
+      });
+      return true;
+    }
+    return false;
   }
 }
 
@@ -39,7 +52,7 @@ const Bestseller = () => {
   const { data } = useGetBooksQuery();
 
   const catalog = new BookCatalog(data ?? []);
-  const bestsellerService = new BestsellerService({ addToCart, notify: toast });
+  const bestsellerService = new BestsellerService({ addToCart, notify: toast, navigate });
 
   const handleAddToCart = async (item) => {
     await bestsellerService.addBookToCart(item);

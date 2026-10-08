@@ -3,6 +3,7 @@ import Footer from '../components/Footer'
 import Header from '../components/Header'
 import { useGetBooksQuery } from '../services/bookApi'
 import { useCart } from '../components/CartContext'
+import { getAuthToken } from '../services/api'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router'
 
@@ -19,12 +20,19 @@ const Books = () => {
     const [filterOpen, setFilterOpen] = useState(false);
 
     const handleAddToCart = async (item) => {
-        await addToCart(item);
-        toast.success(`${item.title} added to cart!`, {
-            duration: 3000,
-            style: { padding: '14px', color: '#12923d', background: '#ecfdf3' },
-            iconTheme: { primary: '#12923d' },
-        });
+        if (!getAuthToken()) {
+            toast.error("Please sign in to add to cart");
+            navigate("/user", { state: { from: "/books" } });
+            return;
+        }
+        const success = await addToCart(item);
+        if (success !== false) {
+            toast.success(`${item.title} added to cart!`, {
+                duration: 2000,
+                style: { padding: '14px', color: '#12923d', background: '#ecfdf3' },
+                iconTheme: { primary: '#12923d' },
+            });
+        }
     };
 
     const getSingleProductId = (id) => {
