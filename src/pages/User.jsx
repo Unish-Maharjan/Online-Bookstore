@@ -252,7 +252,7 @@ export default function User() {
               />
               <input
                 type="email"
-                placeholder="name@example.com"
+                placeholder={isRegister ? "name@example.com" : undefined}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-[#5951e6] focus:ring-2 focus:ring-indigo-100 transition bg-white"
@@ -282,7 +282,7 @@ export default function User() {
               />
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder={isRegister ? "Minimum 6 characters" : "Enter your password"}
+                placeholder={isRegister ? "Minimum 6 characters" : undefined}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-[#5951e6] focus:ring-2 focus:ring-indigo-100 transition bg-white"

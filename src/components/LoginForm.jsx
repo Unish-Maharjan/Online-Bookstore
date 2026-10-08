@@ -121,7 +121,7 @@ function LoginForm() {
 
         <input
           type="email"
-          placeholder="Email address"
+          placeholder={isRegister ? "Email address" : undefined}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full border rounded-2xl px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-indigo-300"
@@ -129,7 +129,7 @@ function LoginForm() {
 
         <input
           type="password"
-          placeholder="Password"
+          placeholder={isRegister ? "Password" : undefined}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full border rounded-2xl px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-indigo-300"
